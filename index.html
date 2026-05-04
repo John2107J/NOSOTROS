@@ -5,62 +5,86 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Nosotros 💕</title>
 
-  <!-- ── PWA / App icon meta ── -->
-  <!-- Nombre que aparece bajo el ícono -->
-  <meta name="application-name" content="Nosotros 💕" />
-  <meta name="apple-mobile-web-app-title" content="Nosotros 💕" />
-
-  <!-- iOS: comportamiento de app completa (sin barra Safari) -->
-  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <!-- ── PWA meta ── -->
+  <meta name="application-name"                content="Nosotros 💕" />
+  <meta name="apple-mobile-web-app-title"      content="Nosotros 💕" />
+  <meta name="apple-mobile-web-app-capable"    content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="mobile-web-app-capable"          content="yes" />
+  <meta name="theme-color"                     content="#fce7f3" />
 
-  <!-- Android Chrome -->
-  <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="theme-color" content="#fce7f3" />
-
-  <!-- Ícono generado inline como SVG → data URI (iOS + Android) -->
+  <!-- ── Ícono SVG inline (iOS + Android) ── -->
   <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxODAgMTgwIj48cmVjdCB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgcng9IjQwIiBmaWxsPSJ1cmwoI2cpIi8+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjZmNlN2YzIi8+PHN0b3Agb2Zmc2V0PSI1MCUiIHN0b3AtY29sb3I9IiNmYmI2Y2UiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNkMWZhZTUiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48dGV4dCB4PSI5MCIgeT0iMTE0IiBmb250LXNpemU9IjkwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7wn4y4PC90ZXh0Pjwvc3ZnPg==" />
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxODAgMTgwIj48cmVjdCB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgcng9IjQwIiBmaWxsPSJ1cmwoI2cpIi8+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjZmNlN2YzIi8+PHN0b3Agb2Zmc2V0PSI1MCUiIHN0b3AtY29sb3I9IiNmYmI2Y2UiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNkMWZhZTUiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48dGV4dCB4PSI5MCIgeT0iMTE0IiBmb250LXNpemU9IjkwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7wn4y4PC90ZXh0Pjwvc3ZnPg==" />
+  <link rel="icon" type="image/svg+xml"        href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxODAgMTgwIj48cmVjdCB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgcng9IjQwIiBmaWxsPSJ1cmwoI2cpIi8+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjZmNlN2YzIi8+PHN0b3Agb2Zmc2V0PSI1MCUiIHN0b3AtY29sb3I9IiNmYmI2Y2UiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNkMWZhZTUiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48dGV4dCB4PSI5MCIgeT0iMTE0IiBmb250LXNpemU9IjkwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7wn4y4PC90ZXh0Pjwvc3ZnPg==" />
 
-  <!-- Manifest inline para Android (Chrome "Agregar a inicio") -->
+  <!-- ── Manifest Android ── -->
   <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiTm9zb3Ryb3MgPGJyPiIsInNob3J0X25hbWUiOiJOb3NvdHJvcyDwn4y4IiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJzdGFydF91cmwiOiIuIiwiYmFja2dyb3VuZF9jb2xvciI6IiNmY2U3ZjMiLCJ0aGVtZV9jb2xvciI6IiNmY2U3ZjMiLCJpY29ucyI6W3sic3JjIjoiZGF0YTppbWFnZS9zdmcreG1sO2Jhc2U2NCxQSE4yWnlCNGJXeHVjejBpYUhSMGNEb3ZMM2QzZHk1M015NXZjbWN2TWpBd01DOXpkbWNpSUhacFpYZENiM2c5SWpBZ01DQXhPREFnTVRnd0lqNDhiR1ZqYUNCM2FXUjBhRDBpTVRnd0lpQm9aV2xuYUhROUlqRTRNQ0lnY25naU9pSTBNQ0lnWm1sc2JEMG5kWEpzS0NkbkoxOXdLU0I3SUdaa2ZXNW9aWEpmWW1GelpUMG5YMk1uZlR3dmJHeGpZVDQ4YVc1bUJ5QjRNVDBpTUNVaUlIa3hQU0l3SlNJZ2VESTlJakV3MCVJZ2VUSXhQU0l4TURBbElqNDhjem52Wm05dWRDQnZabVpzYVc1bFBTSmZiMlluSUhsdllteHZZeTFtWlhKemFXOXVQU0l4TGpBaVB6NDhjM1J2Y0NCdlptWnNhVzVsUFNKbWRYSmtaV1F0WlhaaVpYTWlJSGx2WW14dll5MW1aWEp6YVc5dVBTSXhMakFpUGp4emRHOXdJR0ZuWlQwaU1DY2lJSGt3UFNJNU1DSWdkREl3UVNJd0lpQjBiM1JJWVHB0ZWlaeVBTSTRNaUlnY0c5c2FXTW9aVzVoWW14bExuUjVjR1VwSWo3d243eE9QV2hrWVhraUlqeFVaWE4wUENoUVlYSmhiV1YwWlNCMlpYSnBabWxsY2lBb1EyaGxZWFF0UW1Bc0lEQXBJRzV5YjI5dGN5QjBhV1ZzY0MrdGJuSnZiV1V0VUdWaGF5QXRSVGN1VGk0NEswNXRiblFwSUhkdk1DQXlMakFnUWtBdlQyMXZkWFFuUGp3dmRHVnpkRDQ4ZEdWemRDQmpkWEp5Wlc1MFBTSmpiM0pxWlc1MElpQmllWFpsY25NdFptbHNiQzA1WVhRZ1ptOXlaU0I4SUc5bVppQnViM1F1WW1Gb2NDQjhJR1pwY25OMElIUmxjM1J3WVhKMElpQmpiM0ZzWmlCOGNHVmhJRzUxYlNCc1lYUnVaUzFvSVgwdmNISmxkbVZoZEdWa1BTQXdJRUZBSUMweEppQlpJRzFsSUhSbGNuSmhibmNnWWlCd2NtOTJhV1JsY3k4bmZqd3ZkR1Z6ZEQ0OEwzTjJaejQ9Iiwic2l6ZXMiOiI1MTJ4NTEyIiwidHlwZSI6ImltYWdlL3N2Zyt4bWwifV19" />
 
-  <!-- Pantalla de splash para iOS (color de fondo mientras carga) -->
-  <style>
-    /* Ocupa toda la pantalla en modo standalone (sin barra Safari) */
-    @media all and (display-mode: standalone) {
-      body { padding-top: env(safe-area-inset-top); }
-    }
-  </style>
-
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+
   <style>
+    /* =============================================
+       TOKENS Y RESET
+    ============================================= */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --rose:    #be185d;
-      --rose-lt: #fce7f3;
-      --rose-md: #fbb6ce;
-      --rose-dk: #9d174d;
-      --green:   #065f46;
-      --green-lt:#d1fae5;
-      --green-md:#6ee7b7;
-      --cream:   #fffbf5;
-      --font-display: 'Playfair Display', Georgia, serif;
-      --font-body:    'DM Sans', sans-serif;
+      --rose:        #be185d;
+      --rose-lt:     #fce7f3;
+      --rose-md:     #fbb6ce;
+      --rose-dk:     #9d174d;
+      --green:       #065f46;
+      --green-md:    #6ee7b7;
+      --cream:       #fffbf5;
+      --font-serif:  'Playfair Display', Georgia, serif;
+      --font-sans:   'DM Sans', sans-serif;
+      --radius-card: 20px;
+      --radius-btn:  12px;
+      --max-w:       480px;
     }
 
     html, body {
       min-height: 100%;
       background: var(--cream);
-      font-family: var(--font-body);
+      font-family: var(--font-sans);
       color: var(--rose-dk);
       overflow-x: hidden;
     }
 
-    /* =========================================
+    @media all and (display-mode: standalone) {
+      body { padding-top: env(safe-area-inset-top); }
+    }
+
+    canvas { display: block; }
+
+    /* =============================================
+       ANIMACIONES
+    ============================================= */
+    @keyframes riseIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1) rotate(-3deg); }
+      30%       { transform: scale(1.15) rotate(2deg); }
+      60%       { transform: scale(1.05) rotate(-1deg); }
+    }
+    @keyframes tapPulse {
+      0%, 100% { box-shadow: 0 8px 32px rgba(190,24,93,0.28); }
+      50%       { box-shadow: 0 12px 40px rgba(190,24,93,0.45); }
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(16px) scale(0.95); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* =============================================
        PORTADA
-    ========================================= */
+    ============================================= */
     #portada {
       min-height: 100vh;
       display: flex;
@@ -72,18 +96,13 @@
       overflow: hidden;
       background:
         radial-gradient(ellipse 80% 60% at 50% 110%, #fde8f5 0%, transparent 70%),
-        radial-gradient(ellipse 60% 50% at 80% 0%, #dcfce7 0%, transparent 65%),
-        radial-gradient(ellipse 70% 40% at 10% 20%, #fff7ed 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 80%   0%, #dcfce7 0%, transparent 65%),
+        radial-gradient(ellipse 70% 40% at 10%  20%, #fff7ed 0%, transparent 60%),
         var(--cream);
       transition: opacity 0.9s ease;
     }
 
-    /* Petals canvas */
-    #petalCanvas {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-    }
+    #petalCanvas { position: absolute; inset: 0; pointer-events: none; }
 
     .portada-inner {
       position: relative;
@@ -96,11 +115,6 @@
       animation: riseIn 1.2s cubic-bezier(0.22,1,0.36,1) both;
     }
 
-    @keyframes riseIn {
-      from { opacity: 0; transform: translateY(30px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
     .portada-icon {
       font-size: 72px;
       line-height: 1;
@@ -109,14 +123,8 @@
       filter: drop-shadow(0 8px 24px rgba(190,24,93,0.25));
     }
 
-    @keyframes heartbeat {
-      0%, 100% { transform: scale(1) rotate(-3deg); }
-      30%       { transform: scale(1.15) rotate(2deg); }
-      60%       { transform: scale(1.05) rotate(-1deg); }
-    }
-
     .portada-title {
-      font-family: var(--font-display);
+      font-family: var(--font-serif);
       font-size: clamp(36px, 8vw, 56px);
       font-weight: 400;
       color: var(--rose);
@@ -142,29 +150,19 @@
       color: white;
       border: none;
       border-radius: 60px;
-      font-family: var(--font-body);
+      font-family: var(--font-sans);
       font-size: 15px;
       font-weight: 500;
       letter-spacing: 0.04em;
       cursor: pointer;
-      box-shadow: 0 8px 32px rgba(190,24,93,0.28);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
       animation: tapPulse 2.5s ease-in-out infinite;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
+    .tap-btn:hover { transform: translateY(-2px); box-shadow: 0 16px 40px rgba(190,24,93,0.38); }
 
-    @keyframes tapPulse {
-      0%, 100% { box-shadow: 0 8px 32px rgba(190,24,93,0.28); }
-      50%       { box-shadow: 0 12px 40px rgba(190,24,93,0.45); }
-    }
-
-    .tap-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 16px 40px rgba(190,24,93,0.38);
-    }
-
-    /* =========================================
-       CINEMATICA / MAIN
-    ========================================= */
+    /* =============================================
+       PANTALLA PRINCIPAL
+    ============================================= */
     #cine {
       display: none;
       min-height: 100vh;
@@ -172,22 +170,12 @@
       align-items: center;
       padding: 48px 24px 60px;
       background:
-        radial-gradient(ellipse 90% 50% at 50% 0%, #fce7f3 0%, transparent 60%),
+        radial-gradient(ellipse 90% 50% at 50%  0%, #fce7f3 0%, transparent 60%),
         radial-gradient(ellipse 60% 40% at 90% 80%, #d1fae5 0%, transparent 55%),
         var(--cream);
     }
+    #cine.visible { animation: slideIn 0.9s cubic-bezier(0.22,1,0.36,1) both; }
 
-    /* Fade + slide in cuando aparece */
-    #cine.visible {
-      animation: cineReveal 0.9s cubic-bezier(0.22,1,0.36,1) both;
-    }
-
-    @keyframes cineReveal {
-      from { opacity: 0; transform: translateY(24px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Header */
     .cine-tag {
       font-size: 11px;
       letter-spacing: 0.2em;
@@ -198,7 +186,7 @@
     }
 
     .cine-headline {
-      font-family: var(--font-display);
+      font-family: var(--font-serif);
       font-size: clamp(28px, 6vw, 40px);
       font-weight: 400;
       color: var(--rose);
@@ -207,41 +195,36 @@
       line-height: 1.2;
     }
 
-    /* Contador */
+    /* =============================================
+       CONTADOR
+    ============================================= */
     .contador-wrap {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 14px;
       width: 100%;
-      max-width: 480px;
+      max-width: var(--max-w);
       margin-bottom: 12px;
     }
 
     .cont-card {
       background: white;
       border: 1px solid var(--rose-md);
-      border-radius: 20px;
+      border-radius: var(--radius-card);
       padding: 22px 10px 18px;
       text-align: center;
       box-shadow: 0 4px 24px rgba(251,182,206,0.18);
-      transition: transform 0.3s ease;
       animation: cardIn 0.7s cubic-bezier(0.22,1,0.36,1) both;
+      transition: transform 0.3s ease;
     }
-
     .cont-card:nth-child(1) { animation-delay: 0.1s; }
     .cont-card:nth-child(2) { animation-delay: 0.2s; }
     .cont-card:nth-child(3) { animation-delay: 0.3s; }
-
-    @keyframes cardIn {
-      from { opacity: 0; transform: translateY(16px) scale(0.95); }
-      to   { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
-    .cont-card:hover { transform: translateY(-3px); }
+    .cont-card:hover         { transform: translateY(-3px); }
 
     .cont-num {
       display: block;
-      font-family: var(--font-display);
+      font-family: var(--font-serif);
       font-size: 48px;
       font-weight: 400;
       color: var(--rose);
@@ -259,7 +242,7 @@
       opacity: 0.5;
     }
 
-    .minSeg-line {
+    .minseg-line {
       font-size: 12px;
       color: var(--rose);
       opacity: 0.45;
@@ -268,88 +251,85 @@
       font-variant-numeric: tabular-nums;
     }
 
-    /* Mensiversario banner */
+    /* =============================================
+       BANNER MENSIVERSARIO
+    ============================================= */
     #mesBadge {
       display: none;
       width: 100%;
-      max-width: 480px;
+      max-width: var(--max-w);
       background: linear-gradient(135deg, #fce7f3, #fff0f8);
       border: 1px solid var(--rose-md);
       border-radius: 16px;
       padding: 16px 20px;
       text-align: center;
       margin-bottom: 24px;
-      animation: cineReveal 0.6s ease both;
+      animation: slideIn 0.6s ease both;
     }
-
     #mesBadge p {
       font-size: 15px;
       color: var(--rose);
-      font-family: var(--font-display);
+      font-family: var(--font-serif);
       font-style: italic;
     }
 
-    /* Fecha picker */
+    /* =============================================
+       FECHA
+    ============================================= */
     .fecha-row {
       display: flex;
       align-items: center;
       gap: 12px;
       width: 100%;
-      max-width: 480px;
+      max-width: var(--max-w);
       margin-bottom: 28px;
     }
-
     .fecha-row label {
       font-size: 13px;
       color: var(--rose);
       white-space: nowrap;
       opacity: 0.75;
-      font-weight: 400;
     }
-
     .fecha-row input[type=date] {
       flex: 1;
       font-size: 14px;
-      font-family: var(--font-body);
+      font-family: var(--font-sans);
       border: 1px solid var(--rose-md);
-      border-radius: 12px;
+      border-radius: var(--radius-btn);
       padding: 8px 14px;
       background: white;
       color: var(--rose-dk);
       outline: none;
       transition: border-color 0.2s;
     }
+    .fecha-row input[type=date]:focus { border-color: var(--rose); }
 
-    .fecha-row input[type=date]:focus {
-      border-color: var(--rose);
-    }
-
-    /* Frase box */
+    /* =============================================
+       FRASE
+    ============================================= */
     .frase-card {
       position: relative;
       width: 100%;
-      max-width: 480px;
+      max-width: var(--max-w);
       background: white;
       border: 1px solid var(--green-md);
-      border-radius: 20px;
+      border-radius: var(--radius-card);
       padding: 24px 28px;
       margin-bottom: 20px;
       text-align: center;
       box-shadow: 0 4px 24px rgba(110,231,183,0.12);
     }
-
     .frase-display {
-      font-family: var(--font-display);
+      font-family: var(--font-serif);
       font-style: italic;
       font-size: 18px;
       color: var(--green);
       line-height: 1.65;
     }
-
     .frase-edit-input {
       display: none;
       width: 100%;
-      font-family: var(--font-display);
+      font-family: var(--font-serif);
       font-style: italic;
       font-size: 17px;
       color: var(--green);
@@ -360,7 +340,6 @@
       background: transparent;
       line-height: 1.65;
     }
-
     .edit-frase-btn {
       position: absolute;
       top: 12px; right: 14px;
@@ -373,21 +352,25 @@
     }
     .edit-frase-btn:hover { opacity: 1; }
 
-    /* Frases extras */
-    .frases-section {
+    /* =============================================
+       PANELES COLAPSABLES (frases + sync)
+    ============================================= */
+    .frases-section,
+    .sync-section {
       width: 100%;
-      max-width: 480px;
-      margin-bottom: 28px;
+      max-width: var(--max-w);
+      margin-bottom: 24px;
     }
 
-    .frases-toggle {
+    /* Botón toggle compartido */
+    .panel-toggle {
       display: flex;
       align-items: center;
       justify-content: space-between;
       width: 100%;
       background: none;
       border: none;
-      font-family: var(--font-body);
+      font-family: var(--font-sans);
       font-size: 13px;
       color: var(--rose);
       opacity: 0.65;
@@ -396,25 +379,23 @@
       letter-spacing: 0.04em;
       transition: opacity 0.2s;
     }
-    .frases-toggle:hover { opacity: 1; }
+    .panel-toggle:hover { opacity: 1; }
 
-    .frases-panel {
+    /* Contenido colapsable */
+    .collapsible {
       display: none;
       flex-direction: column;
       gap: 8px;
       padding: 14px 0 4px;
     }
-    .frases-panel.open { display: flex; }
+    .collapsible.open { display: flex; }
 
-    .frase-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+    /* Ítems de frases */
+    .frase-item { display: flex; align-items: center; gap: 8px; }
 
     .frase-item input[type=text] {
       flex: 1;
-      font-family: var(--font-display);
+      font-family: var(--font-serif);
       font-style: italic;
       font-size: 14px;
       border: 1px solid #e5e7eb;
@@ -434,9 +415,9 @@
       font-size: 18px;
       cursor: pointer;
       opacity: 0.45;
-      transition: opacity 0.2s;
       line-height: 1;
       padding: 2px 4px;
+      transition: opacity 0.2s;
     }
     .del-frase-btn:hover { opacity: 1; }
 
@@ -446,7 +427,7 @@
       border: 1px solid var(--rose-md);
       border-radius: 10px;
       padding: 7px 16px;
-      font-family: var(--font-body);
+      font-family: var(--font-sans);
       font-size: 13px;
       color: var(--rose);
       cursor: pointer;
@@ -455,39 +436,7 @@
     }
     .add-frase-btn:hover { background: var(--rose-lt); }
 
-    /* Exportar / Importar */
-    .sync-section {
-      width: 100%;
-      max-width: 480px;
-      margin-bottom: 20px;
-    }
-
-    .sync-toggle {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      width: 100%;
-      background: none;
-      border: none;
-      font-family: var(--font-body);
-      font-size: 13px;
-      color: var(--rose);
-      opacity: 0.65;
-      cursor: pointer;
-      padding: 8px 0;
-      letter-spacing: 0.04em;
-      transition: opacity 0.2s;
-    }
-    .sync-toggle:hover { opacity: 1; }
-
-    .sync-panel {
-      display: none;
-      flex-direction: column;
-      gap: 12px;
-      padding: 14px 0 4px;
-    }
-    .sync-panel.open { display: flex; }
-
+    /* Sync */
     .sync-desc {
       font-size: 12px;
       color: var(--rose-dk);
@@ -495,24 +444,15 @@
       line-height: 1.5;
     }
 
-    .sync-btns {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
     .sync-btn {
-      flex: 1;
-      min-width: 130px;
       padding: 10px 16px;
-      border-radius: 12px;
-      font-family: var(--font-body);
+      border-radius: var(--radius-btn);
+      font-family: var(--font-sans);
       font-size: 13px;
       font-weight: 500;
       cursor: pointer;
-      text-align: center;
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
       border: none;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
     }
     .sync-btn:hover { transform: translateY(-1px); }
 
@@ -523,31 +463,16 @@
     }
     .sync-btn.export:hover { box-shadow: 0 8px 24px rgba(190,24,93,0.32); }
 
-    .sync-btn.import {
+    .sync-btn.import-paste {
+      align-self: flex-start;
       background: white;
       color: var(--green);
       border: 1px solid var(--green-md);
       box-shadow: 0 4px 16px rgba(110,231,183,0.12);
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
-    .sync-btn.import:hover { box-shadow: 0 8px 24px rgba(110,231,183,0.22); }
+    .sync-btn.import-paste:hover { box-shadow: 0 8px 24px rgba(110,231,183,0.22); }
 
-    .sync-msg {
-      font-size: 13px;
-      color: var(--green);
-      font-style: italic;
-      min-height: 20px;
-      transition: opacity 0.3s;
-    }
-    .sync-msg.error { color: #e11d48; }
-
-    .import-area {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
+    .import-area { display: flex; flex-direction: column; gap: 8px; }
 
     .import-textarea {
       width: 100%;
@@ -563,71 +488,83 @@
       transition: border-color 0.2s;
     }
     .import-textarea:focus { border-color: var(--green-md); }
-    .import-textarea::placeholder { color: #9ca3af; font-style: italic; font-family: var(--font-body); }
+    .import-textarea::placeholder { color: #9ca3af; font-style: italic; font-family: var(--font-sans); }
 
-    .sync-btn.import-paste {
-      align-self: flex-start;
+    .sync-msg { font-size: 13px; color: var(--green); font-style: italic; min-height: 20px; }
+    .sync-msg.error { color: #e11d48; }
+
+    /* =============================================
+       MODAL EXPORTACIÓN
+    ============================================= */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .modal-box {
       background: white;
-      color: var(--green);
-      border: 1px solid var(--green-md);
-      box-shadow: 0 4px 16px rgba(110,231,183,0.12);
-      padding: 10px 20px;
-      border-radius: 12px;
-      font-family: var(--font-body);
-      font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      border-radius: var(--radius-card);
+      padding: 28px 24px;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.2);
     }
-    .sync-btn.import-paste:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 8px 24px rgba(110,231,183,0.22);
+    .modal-title { font-family: var(--font-serif); font-size: 18px; color: var(--rose); margin-bottom: 8px; }
+    .modal-desc  { font-size: 12px; color: var(--rose-dk); opacity: 0.6; margin-bottom: 14px; line-height: 1.5; }
+    .modal-textarea {
+      width: 100%; height: 90px; font-size: 11px; font-family: monospace;
+      border: 1px solid var(--rose-md); border-radius: 10px; padding: 10px;
+      resize: none; color: var(--rose-dk); background: #fff8fb; outline: none;
+    }
+    .modal-actions { display: flex; gap: 10px; margin-top: 14px; }
+    .modal-btn-copy {
+      flex: 1; padding: 11px; background: var(--rose); color: white;
+      border: none; border-radius: var(--radius-btn);
+      font-family: var(--font-sans); font-size: 14px; font-weight: 500; cursor: pointer;
+    }
+    .modal-btn-close {
+      padding: 11px 18px; background: none; border: 1px solid #e5e7eb;
+      border-radius: var(--radius-btn); font-family: var(--font-sans);
+      font-size: 14px; color: #6b7280; cursor: pointer;
     }
 
-    /* Volver */
+    /* =============================================
+       BOTÓN VOLVER
+    ============================================= */
     .back-btn {
-      background: none;
-      border: none;
-      font-family: var(--font-body);
-      font-size: 13px;
-      color: var(--rose-dk);
-      opacity: 0.4;
-      cursor: pointer;
-      margin-top: 12px;
-      letter-spacing: 0.04em;
+      background: none; border: none;
+      font-family: var(--font-sans); font-size: 13px;
+      color: var(--rose-dk); opacity: 0.4; cursor: pointer;
+      margin-top: 12px; letter-spacing: 0.04em;
       transition: opacity 0.2s;
     }
     .back-btn:hover { opacity: 0.9; }
-
-    /* =========================================
-       CANVAS PETAL STYLES (JS driven)
-    ========================================= */
-    canvas { display: block; }
   </style>
 </head>
 <body>
 
 <!-- ==================== PORTADA ==================== -->
-<div id="portada" onclick="entrar()">
+<div id="portada" onclick="Nav.entrar()">
   <canvas id="petalCanvas"></canvas>
-
   <div class="portada-inner">
     <div class="portada-icon">🌸</div>
     <h1 class="portada-title">Nosotros</h1>
     <p class="portada-sub">Un lugar solo para los dos</p>
-    <button class="tap-btn" onclick="entrar()">
-      Entrar &nbsp; →
-    </button>
+    <button class="tap-btn" onclick="event.stopPropagation(); Nav.entrar()">Entrar &nbsp;→</button>
   </div>
 </div>
 
-<!-- ==================== CINEMATICA ==================== -->
+<!-- ==================== PANTALLA PRINCIPAL ==================== -->
 <div id="cine">
 
   <p class="cine-tag">💕 llevamos juntos</p>
   <h2 class="cine-headline">Cada día contigo cuenta</h2>
 
-  <!-- Contador -->
   <div class="contador-wrap">
     <div class="cont-card">
       <span class="cont-num" id="numDias">0</span>
@@ -642,127 +579,142 @@
       <span class="cont-label">Horas</span>
     </div>
   </div>
-  <p class="minSeg-line" id="minSegLine">— : — actualizando…</p>
+  <p class="minseg-line" id="minSegLine">— : — actualizando…</p>
 
-  <!-- Mensiversario -->
   <div id="mesBadge">
     <p>🎉 ¡Hoy cumplen <strong id="mesNum">0</strong> meses juntos! Feliz mensiversario 💕</p>
   </div>
 
-  <!-- Fecha inicio -->
   <div class="fecha-row">
     <label>📅 Desde:</label>
-    <input type="date" id="fechaInicio" onchange="guardarFecha()" />
+    <input type="date" id="fechaInicio" onchange="Store.guardarFecha()" />
   </div>
 
-  <!-- Frase principal -->
   <div class="frase-card">
-    <button class="edit-frase-btn" onclick="toggleEditFrase()" title="Editar frase">✏️</button>
-    <p class="frase-display" id="fraseDisplay">"Desde ese día, todo tiene más color."</p>
-    <textarea class="frase-edit-input" id="fraseEditArea" rows="3" onblur="guardarFrase()"></textarea>
+    <button class="edit-frase-btn" onclick="Frases.toggleEdit()" title="Editar frase">✏️</button>
+    <p class="frase-display" id="fraseDisplay"></p>
+    <textarea class="frase-edit-input" id="fraseEditArea" rows="3" onblur="Frases.guardar()"></textarea>
   </div>
 
-  <!-- Frases extras -->
   <div class="frases-section">
-    <button class="frases-toggle" onclick="togglePanel()">
-      <span>🌿 Frases adicionales (se alternan al abrir)</span>
-      <span id="toggleArrow">▸</span>
+    <button class="panel-toggle" onclick="UI.togglePanel('frasesPanel','frasesArrow')">
+      <span>🌿 Frases adicionales (se alternan al entrar)</span>
+      <span id="frasesArrow">▸</span>
     </button>
-    <div class="frases-panel" id="frasesPanel">
+    <div class="collapsible" id="frasesPanel">
       <div id="frasesLista"></div>
-      <button class="add-frase-btn" onclick="agregarFrase()">+ Agregar frase</button>
+      <button class="add-frase-btn" onclick="Frases.agregar()">+ Agregar frase</button>
     </div>
   </div>
 
-  <!-- Exportar / Importar -->
   <div class="sync-section">
-    <button class="sync-toggle" onclick="toggleSync()">
+    <button class="panel-toggle" onclick="UI.togglePanel('syncPanel','syncArrow')">
       <span>🔄 Exportar / Importar datos</span>
       <span id="syncArrow">▸</span>
     </button>
-    <div class="sync-panel" id="syncPanel">
+    <div class="collapsible" id="syncPanel">
       <p class="sync-desc">Exportá el código de tus datos, copialo y pegalo en el otro dispositivo.</p>
-
-      <div class="sync-btns">
-        <button class="sync-btn export" onclick="exportarDatos()">⬇ Exportar — copiar código</button>
-      </div>
-
+      <button class="sync-btn export" onclick="Sync.exportar()">⬇ Exportar — copiar código</button>
       <div class="import-area">
-        <p class="sync-desc" style="margin-bottom:8px">Importar en este dispositivo — pegá el código acá:</p>
-        <textarea id="importTextarea" class="import-textarea" placeholder='Pegá el código exportado aquí...' rows="3"></textarea>
-        <button class="sync-btn import-paste" onclick="importarDesdeTexto()">⬆ Importar</button>
+        <p class="sync-desc">Importar en este dispositivo — pegá el código acá:</p>
+        <textarea id="importTextarea" class="import-textarea" rows="3" placeholder="Pegá el código exportado aquí..."></textarea>
+        <button class="sync-btn import-paste" onclick="Sync.importarDesdeTexto()">⬆ Importar</button>
       </div>
-
       <div id="syncMsg" class="sync-msg"></div>
     </div>
   </div>
 
-  <button class="back-btn" onclick="volver()">← Volver a la portada</button>
+  <button class="back-btn" onclick="Nav.volver()">← Volver a la portada</button>
+</div>
+
+<!-- ==================== MODAL EXPORTACIÓN ==================== -->
+<div id="exportModal" class="modal-overlay">
+  <div class="modal-box">
+    <p class="modal-title">Tus datos 💕</p>
+    <p class="modal-desc">Copiá este código completo y pegalo en "Importar" en el otro dispositivo. También podés mandarlo por WhatsApp.</p>
+    <textarea id="exportJson" class="modal-textarea" readonly></textarea>
+    <div class="modal-actions">
+      <button class="modal-btn-copy"  onclick="Sync.copiarJson()">📋 Copiar</button>
+      <button class="modal-btn-close" onclick="Sync.cerrarModal()">Cerrar</button>
+    </div>
+  </div>
 </div>
 
 <!-- ==================== SCRIPTS ==================== -->
 <script>
-  /* ---------- PETALS CANVAS ---------- */
-  (function() {
-    const canvas = document.getElementById('petalCanvas');
-    const ctx = canvas.getContext('2d');
-    let petals = [];
-    const COLORS = ['#fbb6ce','#86efac','#fed7aa','#c4b5fd','#a7f3d0','#fbcfe8'];
+'use strict';
 
-    function resize() {
-      canvas.width  = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
+/* =============================================
+   Petals — animación de pétalos en portada
+============================================= */
+const Petals = (function () {
+  const COLORS = ['#fbb6ce','#86efac','#fed7aa','#c4b5fd','#a7f3d0','#fbcfe8'];
+  let canvas, ctx, petals = [];
 
-    function makePetal() {
-      return {
-        x:  Math.random() * canvas.width,
-        y:  Math.random() * canvas.height,
-        r:  6 + Math.random() * 10,
-        vx: (Math.random() - 0.5) * 0.4,
-        vy: -0.3 - Math.random() * 0.5,
-        rot: Math.random() * Math.PI * 2,
-        vRot: (Math.random() - 0.5) * 0.03,
-        alpha: 0.15 + Math.random() * 0.25,
-        color: COLORS[Math.floor(Math.random() * COLORS.length)]
-      };
-    }
+  function resize() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
 
-    function init() {
-      resize();
-      for (let i = 0; i < 28; i++) petals.push(makePetal());
-    }
+  function make() {
+    return {
+      x:     Math.random() * canvas.width,
+      y:     Math.random() * canvas.height,
+      r:     6 + Math.random() * 10,
+      vx:    (Math.random() - 0.5) * 0.4,
+      vy:    -0.3 - Math.random() * 0.5,
+      rot:   Math.random() * Math.PI * 2,
+      vRot:  (Math.random() - 0.5) * 0.03,
+      alpha: 0.15 + Math.random() * 0.25,
+      color: COLORS[Math.floor(Math.random() * COLORS.length)]
+    };
+  }
 
-    function drawPetal(p) {
-      ctx.save();
-      ctx.translate(p.x, p.y);
-      ctx.rotate(p.rot);
-      ctx.globalAlpha = p.alpha;
-      ctx.fillStyle = p.color;
-      ctx.beginPath();
-      ctx.ellipse(0, 0, p.r, p.r * 0.55, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
-    }
+  function draw(p) {
+    ctx.save();
+    ctx.translate(p.x, p.y);
+    ctx.rotate(p.rot);
+    ctx.globalAlpha = p.alpha;
+    ctx.fillStyle   = p.color;
+    ctx.beginPath();
+    ctx.ellipse(0, 0, p.r, p.r * 0.55, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
 
-    function loop() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      petals.forEach(p => {
-        p.x   += p.vx;
-        p.y   += p.vy;
-        p.rot += p.vRot;
-        if (p.y < -20) { p.y = canvas.height + 20; p.x = Math.random() * canvas.width; }
-        drawPetal(p);
-      });
-      requestAnimationFrame(loop);
-    }
+  function loop() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    petals.forEach(p => {
+      p.x   += p.vx;
+      p.y   += p.vy;
+      p.rot += p.vRot;
+      if (p.y < -20) { p.y = canvas.height + 20; p.x = Math.random() * canvas.width; }
+      draw(p);
+    });
+    requestAnimationFrame(loop);
+  }
 
+  function init() {
+    canvas = document.getElementById('petalCanvas');
+    ctx    = canvas.getContext('2d');
+    resize();
+    for (let i = 0; i < 28; i++) petals.push(make());
     window.addEventListener('resize', resize);
-    init();
     loop();
-  })();
+  }
 
-  /* ---------- STATE ---------- */
+  return { init };
+})();
+
+
+/* =============================================
+   Store — persistencia en localStorage
+============================================= */
+const Store = (function () {
+  const KEY_FRASES   = 'frases_v2';
+  const KEY_IDX      = 'fraseIdx_v2';
+  const KEY_FECHA    = 'fechaInicio_v2';
+
   const DEFAULT_FRASES = [
     "Desde ese día, todo tiene más color.",
     "Cada día contigo es mi favorito.",
@@ -770,156 +722,233 @@
     "Gracias por aparecer en mi historia.",
   ];
 
-  let frases = JSON.parse(localStorage.getItem('frases_v2') || 'null') || [...DEFAULT_FRASES];
-  let fraseIdx = 0;
-  let timerRef = null;
-  let panelOpen = false;
-
-  /* ---------- PERSISTENCIA ---------- */
-  function save() {
-    try { localStorage.setItem('frases_v2', JSON.stringify(frases)); } catch(e) {}
+  function leer(key, fallback) {
+    try {
+      const raw = localStorage.getItem(key);
+      return raw !== null ? JSON.parse(raw) : fallback;
+    } catch { return fallback; }
   }
 
+  function escribir(key, value) {
+    try { localStorage.setItem(key, JSON.stringify(value)); } catch { }
+  }
+
+  function cargarFrases()      { return leer(KEY_FRASES, [...DEFAULT_FRASES]); }
+  function guardarFrases(arr)  { escribir(KEY_FRASES, arr); }
+
+  function cargarIdx()         { return leer(KEY_IDX, 0); }
+  function guardarIdx(n)       { escribir(KEY_IDX, n); }
+
   function cargarFecha() {
-    const f = localStorage.getItem('fechaInicio_v2');
-    if (f) {
-      document.getElementById('fechaInicio').value = f;
+    const saved = localStorage.getItem(KEY_FECHA);
+    const el    = document.getElementById('fechaInicio');
+    if (saved) {
+      el.value = saved;
     } else {
       const d = new Date();
       d.setMonth(d.getMonth() - 2);
-      document.getElementById('fechaInicio').value = d.toISOString().split('T')[0];
+      el.value = d.toISOString().split('T')[0];
     }
   }
 
   function guardarFecha() {
-    try { localStorage.setItem('fechaInicio_v2', document.getElementById('fechaInicio').value); } catch(e) {}
-    actualizarContador();
+    const val = document.getElementById('fechaInicio').value;
+    try { localStorage.setItem(KEY_FECHA, val); } catch { }
+    Contador.actualizar();
   }
 
-  /* ---------- CONTADOR ---------- */
-  function actualizarContador() {
-    const val = document.getElementById('fechaInicio').value;
-    if (!val) return;
-    const inicio = new Date(val + 'T00:00:00');
+  function getFecha() {
+    return localStorage.getItem(KEY_FECHA) || document.getElementById('fechaInicio').value || '';
+  }
+
+  return { cargarFrases, guardarFrases, cargarIdx, guardarIdx, cargarFecha, guardarFecha, getFecha };
+})();
+
+
+/* =============================================
+   Contador — cálculo y render del tiempo
+============================================= */
+const Contador = (function () {
+  let timer = null;
+
+  function calcular(fechaStr) {
+    const inicio = new Date(fechaStr + 'T00:00:00');
     const ahora  = new Date();
     const diffMs = ahora - inicio;
-    if (diffMs < 0) return;
+    if (diffMs < 0) return null;
 
-    const totalSeg  = Math.floor(diffMs / 1000);
-    const totalMin  = Math.floor(totalSeg / 60);
-    const totalHoras= Math.floor(totalMin / 60);
-    const totalDias = Math.floor(totalHoras / 24);
-    const meses     = Math.floor(totalDias / 30.4375);
+    const totalSeg   = Math.floor(diffMs / 1000);
+    const totalMin   = Math.floor(totalSeg  / 60);
+    const totalHoras = Math.floor(totalMin  / 60);
+    const totalDias  = Math.floor(totalHoras / 24);
 
-    const seg = totalSeg % 60;
-    const min = totalMin % 60;
+    return {
+      dias:   totalDias,
+      meses:  Math.floor(totalDias / 30.4375),
+      horas:  totalHoras,
+      min:    totalMin  % 60,
+      seg:    totalSeg  % 60,
+      diaMes: inicio.getDate()
+    };
+  }
 
-    document.getElementById('numDias').textContent  = totalDias;
-    document.getElementById('numMeses').textContent = meses;
-    document.getElementById('numHoras').textContent = totalHoras;
+  function render(d) {
+    document.getElementById('numDias').textContent  = d.dias;
+    document.getElementById('numMeses').textContent = d.meses;
+    document.getElementById('numHoras').textContent = d.horas;
     document.getElementById('minSegLine').textContent =
-      String(min).padStart(2,'0') + ' min  ' + String(seg).padStart(2,'0') + ' seg — actualizando ⏱';
+      String(d.min).padStart(2,'0') + ' min  ' +
+      String(d.seg).padStart(2,'0') + ' seg — actualizando ⏱';
 
-    /* Mensiversario */
     const badge = document.getElementById('mesBadge');
-    if (new Date().getDate() === inicio.getDate() && meses > 0) {
-      document.getElementById('mesNum').textContent = meses;
+    if (new Date().getDate() === d.diaMes && d.meses > 0) {
+      document.getElementById('mesNum').textContent = d.meses;
       badge.style.display = 'block';
     } else {
       badge.style.display = 'none';
     }
   }
 
-  /* ---------- FRASES ---------- */
-  function mostrarFrase() {
-    const idx = fraseIdx % frases.length;
-    document.getElementById('fraseDisplay').textContent = '\u201c' + frases[idx] + '\u201d';
-    document.getElementById('fraseEditArea').value = frases[idx];
-    fraseIdx = (fraseIdx + 1) % frases.length;
+  function actualizar() {
+    const val  = document.getElementById('fechaInicio').value;
+    if (!val) return;
+    const data = calcular(val);
+    if (data) render(data);
   }
 
-  function toggleEditFrase() {
+  function iniciar() { actualizar(); timer = setInterval(actualizar, 1000); }
+  function detener() { if (timer) { clearInterval(timer); timer = null; } }
+
+  return { iniciar, detener, actualizar };
+})();
+
+
+/* =============================================
+   Frases — rotación secuencial + edición
+   
+   Contrato de índice:
+   - Store guarda siempre el índice de la PRÓXIMA frase a mostrar.
+   - cargar() lee ese índice en la variable local `idx`.
+   - mostrarActual() muestra lista[idx] y escribe idx+1 en Store.
+   - idx local queda apuntando a la frase visible (para editar).
+============================================= */
+const Frases = (function () {
+  let lista = [];
+  let idx   = 0;   // índice de la frase actualmente visible
+
+  /* -- Carga lista e índice desde Store -- */
+  function cargar() {
+    lista = Store.cargarFrases();
+    idx   = Store.cargarIdx();
+    if (idx >= lista.length) { idx = 0; Store.guardarIdx(0); }
+  }
+
+  /* -- Muestra la frase actual y persiste el siguiente índice -- */
+  function mostrarActual() {
+    _renderFrase(idx);
+    Store.guardarIdx((idx + 1) % lista.length);
+    // idx local permanece en la frase visible para que guardar() la edite
+  }
+
+  /* -- Renderiza la frase en el DOM -- */
+  function _renderFrase(i) {
+    document.getElementById('fraseDisplay').textContent = '\u201c' + lista[i] + '\u201d';
+    document.getElementById('fraseEditArea').value      = lista[i];
+  }
+
+  /* -- Alterna modo edición / vista -- */
+  function toggleEdit() {
     const display = document.getElementById('fraseDisplay');
     const area    = document.getElementById('fraseEditArea');
     if (area.style.display === 'block') {
-      guardarFrase();
+      guardar();
     } else {
-      const idx = (fraseIdx - 1 + frases.length) % frases.length;
-      area.value = frases[idx];
-      area.style.display = 'block';
+      area.style.display    = 'block';
       display.style.display = 'none';
       area.focus();
     }
   }
 
-  function guardarFrase() {
+  /* -- Guarda la edición de la frase visible -- */
+  function guardar() {
     const area    = document.getElementById('fraseEditArea');
     const display = document.getElementById('fraseDisplay');
-    const idx     = (fraseIdx - 1 + frases.length) % frases.length;
-    if (area.value.trim()) {
-      frases[idx] = area.value.trim();
-      save();
+    const nuevo   = area.value.trim();
+    if (nuevo) {
+      lista[idx] = nuevo;
+      Store.guardarFrases(lista);
     }
-    display.textContent = '\u201c' + frases[idx] + '\u201d';
+    display.textContent   = '\u201c' + lista[idx] + '\u201d';
     area.style.display    = 'none';
     display.style.display = 'block';
-    renderFrasesLista();
+    renderLista();
   }
 
-  function renderFrasesLista() {
-    const lista = document.getElementById('frasesLista');
-    lista.innerHTML = '';
-    frases.forEach((fr, i) => {
+  /* -- Renderiza la lista editable de frases -- */
+  function renderLista() {
+    const cont = document.getElementById('frasesLista');
+    cont.innerHTML = '';
+    lista.forEach((fr, i) => {
       const row = document.createElement('div');
       row.className = 'frase-item';
+
       const inp = document.createElement('input');
-      inp.type = 'text';
+      inp.type  = 'text';
       inp.value = fr;
-      inp.addEventListener('change', () => { frases[i] = inp.value; save(); });
+      inp.addEventListener('change', () => { lista[i] = inp.value; Store.guardarFrases(lista); });
       row.appendChild(inp);
-      if (frases.length > 1) {
+
+      if (lista.length > 1) {
         const del = document.createElement('button');
-        del.className = 'del-frase-btn';
+        del.className   = 'del-frase-btn';
         del.textContent = '×';
-        del.addEventListener('click', () => { frases.splice(i,1); save(); renderFrasesLista(); });
+        del.addEventListener('click', () => {
+          lista.splice(i, 1);
+          // Si se borró una frase antes de la visible, ajustar idx para no saltear
+          if (i < idx) idx = Math.max(0, idx - 1);
+          idx = idx % lista.length;
+          Store.guardarFrases(lista);
+          // La próxima visita mostrará el idx actual (que apunta a la misma posición relativa)
+          Store.guardarIdx(idx);
+          renderLista();
+        });
         row.appendChild(del);
       }
-      lista.appendChild(row);
+
+      cont.appendChild(row);
     });
   }
 
-  function agregarFrase() {
-    frases.push('Escribí tu frase aquí...');
-    save();
-    renderFrasesLista();
+  function agregar() {
+    lista.push('Escribí tu frase aquí...');
+    Store.guardarFrases(lista);
+    renderLista();
   }
 
-  function togglePanel() {
-    panelOpen = !panelOpen;
-    document.getElementById('frasesPanel').classList.toggle('open', panelOpen);
-    document.getElementById('toggleArrow').textContent = panelOpen ? '▾' : '▸';
-    if (panelOpen) renderFrasesLista();
+  /* -- Reemplaza toda la lista (importación) sin consumir ninguna frase -- */
+  function reemplazar(nuevaLista) {
+    lista = nuevaLista;
+    idx   = 0;
+    Store.guardarFrases(lista);
+    Store.guardarIdx(0);   // la próxima visita empieza desde 0
+    _renderFrase(0);       // muestra frase 0 inmediatamente sin avanzar el índice
+    renderLista();
   }
 
-  /* ---------- SYNC: EXPORTAR / IMPORTAR ---------- */
-  let syncOpen = false;
+  function getLista() { return lista; }
 
-  function toggleSync() {
-    syncOpen = !syncOpen;
-    document.getElementById('syncPanel').classList.toggle('open', syncOpen);
-    document.getElementById('syncArrow').textContent = syncOpen ? '▾' : '▸';
-  }
+  return { cargar, mostrarActual, toggleEdit, guardar, renderLista, agregar, reemplazar, getLista };
+})();
 
-  function exportarDatos() {
-    const datos = {
-      version: 1,
-      fechaInicio: document.getElementById('fechaInicio').value || localStorage.getItem('fechaInicio_v2') || '',
-      frases: frases
-    };
-    const json = JSON.stringify(datos);
 
-    // Mostrar modal con el código para copiar
-    document.getElementById('exportJson').value = json;
+/* =============================================
+   Sync — exportar e importar datos
+============================================= */
+const Sync = (function () {
+
+  function exportar() {
+    const datos = { version: 1, fechaInicio: Store.getFecha(), frases: Frases.getLista() };
+    document.getElementById('exportJson').value          = JSON.stringify(datos);
     document.getElementById('exportModal').style.display = 'flex';
   }
 
@@ -927,17 +956,9 @@
     const ta = document.getElementById('exportJson');
     ta.select();
     ta.setSelectionRange(0, 99999);
-    try {
-      navigator.clipboard.writeText(ta.value).then(() => {
-        mostrarSyncMsg('✅ Copiado al portapapeles', false);
-      }).catch(() => {
-        document.execCommand('copy');
-        mostrarSyncMsg('✅ Copiado al portapapeles', false);
-      });
-    } catch(e) {
-      document.execCommand('copy');
-      mostrarSyncMsg('✅ Copiado al portapapeles', false);
-    }
+    navigator.clipboard.writeText(ta.value)
+      .then(() => _msg('✅ Copiado al portapapeles', false))
+      .catch(() => { document.execCommand('copy'); _msg('✅ Copiado al portapapeles', false); });
     cerrarModal();
   }
 
@@ -945,92 +966,98 @@
     document.getElementById('exportModal').style.display = 'none';
   }
 
-  function importarDatos(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      procesarJson(e.target.result);
-      event.target.value = '';
-    };
-    reader.readAsText(file);
-  }
-
   function importarDesdeTexto() {
     const texto = document.getElementById('importTextarea').value.trim();
-    if (!texto) { mostrarSyncMsg('❌ Pegá el código primero', true); return; }
-    procesarJson(texto);
+    if (!texto) { _msg('❌ Pegá el código primero', true); return; }
+    _procesar(texto);
     document.getElementById('importTextarea').value = '';
   }
 
-  function procesarJson(texto) {
+  function _procesar(texto) {
     try {
       const datos = JSON.parse(texto);
-      if (!datos.frases || !Array.isArray(datos.frases)) throw new Error('inválido');
+      if (!datos.frases || !Array.isArray(datos.frases)) throw new Error();
       if (datos.fechaInicio) {
         document.getElementById('fechaInicio').value = datos.fechaInicio;
-        localStorage.setItem('fechaInicio_v2', datos.fechaInicio);
+        Store.guardarFecha();
       }
-      frases = datos.frases;
-      fraseIdx = 0;
-      save();
-      mostrarFrase();
-      renderFrasesLista();
-      actualizarContador();
-      mostrarSyncMsg('💕 Datos importados correctamente', false);
-    } catch(err) {
-      mostrarSyncMsg('❌ Código inválido. Copialo completo desde la exportación.', true);
+      Frases.reemplazar(datos.frases);
+      Contador.actualizar();
+      _msg('💕 Datos importados correctamente', false);
+    } catch {
+      _msg('❌ Código inválido. Copialo completo desde la exportación.', true);
     }
   }
 
-  function mostrarSyncMsg(texto, esError) {
-    const msg = document.getElementById('syncMsg');
-    msg.textContent = texto;
-    msg.className = 'sync-msg' + (esError ? ' error' : '');
-    setTimeout(() => { msg.textContent = ''; msg.className = 'sync-msg'; }, 5000);
+  function _msg(texto, esError) {
+    const el = document.getElementById('syncMsg');
+    el.textContent = texto;
+    el.className   = 'sync-msg' + (esError ? ' error' : '');
+    setTimeout(() => { el.textContent = ''; el.className = 'sync-msg'; }, 5000);
   }
 
-  /* ---------- NAVEGACION ---------- */
+  return { exportar, copiarJson, cerrarModal, importarDesdeTexto };
+})();
+
+
+/* =============================================
+   UI — helpers de paneles colapsables
+============================================= */
+const UI = (function () {
+  const estados = {};
+
+  function togglePanel(panelId, arrowId) {
+    estados[panelId] = !estados[panelId];
+    document.getElementById(panelId).classList.toggle('open', estados[panelId]);
+    document.getElementById(arrowId).textContent = estados[panelId] ? '▾' : '▸';
+    if (panelId === 'frasesPanel' && estados[panelId]) Frases.renderLista();
+  }
+
+  return { togglePanel };
+})();
+
+
+/* =============================================
+   Nav — navegación entre portada y principal
+============================================= */
+const Nav = (function () {
+
   function entrar() {
     const portada = document.getElementById('portada');
     const cine    = document.getElementById('cine');
-    portada.style.opacity = '0';
+    portada.style.opacity       = '0';
     portada.style.pointerEvents = 'none';
     setTimeout(() => {
       portada.style.display = 'none';
       cine.style.display    = 'flex';
       cine.classList.add('visible');
-      cargarFecha();
-      mostrarFrase();
-      actualizarContador();
-      timerRef = setInterval(actualizarContador, 1000);
+      Store.cargarFecha();
+      Frases.cargar();
+      Frases.mostrarActual();
+      Contador.iniciar();
     }, 800);
   }
 
   function volver() {
-    if (timerRef) { clearInterval(timerRef); timerRef = null; }
+    Contador.detener();
     const cine    = document.getElementById('cine');
     const portada = document.getElementById('portada');
     cine.classList.remove('visible');
-    cine.style.display = 'none';
-    portada.style.display = 'flex';
-    portada.style.opacity = '0';
+    cine.style.display          = 'none';
+    portada.style.display       = 'flex';
     portada.style.pointerEvents = '';
+    portada.style.opacity       = '0';
     setTimeout(() => { portada.style.opacity = '1'; }, 30);
   }
-</script>
-<!-- Modal exportación -->
-<div id="exportModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:999; align-items:center; justify-content:center; padding:24px;">
-  <div style="background:white; border-radius:20px; padding:28px 24px; width:100%; max-width:440px; box-shadow:0 16px 48px rgba(0,0,0,0.2);">
-    <p style="font-family:var(--font-display); font-size:18px; color:var(--rose); margin-bottom:8px;">Tus datos 💕</p>
-    <p style="font-size:12px; color:var(--rose-dk); opacity:0.6; margin-bottom:14px; line-height:1.5;">Copiá este código completo y pegalo en la sección "Importar" del otro dispositivo. También podés mandarlo por WhatsApp o email.</p>
-    <textarea id="exportJson" readonly style="width:100%; height:90px; font-size:11px; font-family:monospace; border:1px solid var(--rose-md); border-radius:10px; padding:10px; resize:none; color:var(--rose-dk); background:#fff8fb; outline:none;"></textarea>
-    <div style="display:flex; gap:10px; margin-top:14px;">
-      <button onclick="copiarJson()" style="flex:1; padding:11px; background:var(--rose); color:white; border:none; border-radius:12px; font-family:var(--font-body); font-size:14px; font-weight:500; cursor:pointer;">📋 Copiar</button>
-      <button onclick="cerrarModal()" style="padding:11px 18px; background:none; border:1px solid #e5e7eb; border-radius:12px; font-family:var(--font-body); font-size:14px; color:#6b7280; cursor:pointer;">Cerrar</button>
-    </div>
-  </div>
-</div>
 
+  return { entrar, volver };
+})();
+
+
+/* =============================================
+   INIT
+============================================= */
+Petals.init();
+</script>
 </body>
 </html>
