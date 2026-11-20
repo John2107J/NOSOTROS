@@ -1,5 +1,5 @@
-import { Store } from './store.js?v=202611202322';
-import { Frases } from './frases.js?v=202611202322';
+import { Store } from './store.js?v=202611202343';
+import { Frases } from './frases.js?v=202611202343';
 
 /**
  * Sync — sincroniza la fecha y las frases con la pareja, en tiempo real.
@@ -32,7 +32,7 @@ export function iniciar() {
   }
   pintar();
 
-  import('./nube.js?v=202611202322')
+  import('./nube.js?v=202611202343')
     .then(m => {
       Nube = m;
       if (!m.configurado) { pintar(); return; }

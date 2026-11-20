@@ -1,9 +1,9 @@
-import { Petals }   from './petals.js?v=202611202322';
-import { Store }    from './store.js?v=202611202322';
-import { Contador } from './contador.js?v=202611202322';
-import { Frases }   from './frases.js?v=202611202322';
-import { UI }        from './ui.js?v=202611202322';
-import { Nav }       from './nav.js?v=202611202322';
+import { Petals }   from './petals.js?v=202611202343';
+import { Store }    from './store.js?v=202611202343';
+import { Contador } from './contador.js?v=202611202343';
+import { Frases }   from './frases.js?v=202611202343';
+import { UI }        from './ui.js?v=202611202343';
+import { Nav }       from './nav.js?v=202611202343';
 
 /**
  * main.js — punto de entrada de la app.
@@ -26,4 +26,6 @@ Petals.init();
 try {
   const n = localStorage.getItem('seccionNombre_v1');
   if (n) document.getElementById('poroEntryNombre').textContent = n;
+  const m = localStorage.getItem('momentosNombre_v1');
+  if (m) document.getElementById('momEntryNombre').textContent = m;
 } catch { /* sin storage */ }

@@ -14,7 +14,7 @@
  * Este módulo se carga solo cuando se abre la sección (import dinámico).
  * La sesión y la pareja las maneja nube.js (compartido con el resto de la app).
  */
-import * as Nube from './nube.js?v=202611202322';
+import * as Nube from './nube.js?v=202611202343';
 const ALFABETO = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // sin 0/O ni 1/I para que no se confundan
 export const NOMBRE_DEFAULT = 'Corazoncitos';
 export const ICONO = '💗';
