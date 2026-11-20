@@ -1,4 +1,4 @@
-import { Store } from './store.js?v=202611202251';
+import { Store } from './store.js?v=202611202322';
 
 /**
  * Frases — rotación secuencial de frases + edición.

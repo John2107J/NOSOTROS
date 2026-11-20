@@ -17,6 +17,10 @@ rules_version = '2';
 //      y solo si te alcanza el saldo. Eso genera un cupón.
 //    · Cualquiera de los dos crea premios, para sí o para el otro.
 //      Solo podés comprar los premios que son para vos.
+//    · El precio de un premio lo pone SIEMPRE la otra persona (nunca su destinatario).
+//      Un premio que cargás para vos queda sin precio hasta que tu pareja se lo ponga,
+//      y si le cambiás el nombre o el detalle, vuelve a quedar sin precio.
+//    · El destinatario de un premio no se puede cambiar después de crearlo.
 //    · Cualquiera de los dos puede editar o borrar cualquier premio.
 //    · El nombre de la sección (por defecto "Corazoncitos"), la fecha de inicio y
 //      las frases los cambia cualquiera de los dos.
@@ -154,26 +158,42 @@ service cloud.firestore {
       match /premios/{pid} {
         allow read: if esMiembro(cid);
 
+        // Quien carga un premio para el otro le pone precio; uno para sí mismo va sin precio.
         allow create: if esMiembro(cid)
           && premioValido(request.resource.data)
           && request.resource.data.creador == me()
-          && request.resource.data.creado == request.time;
+          && request.resource.data.creado == request.time
+          && (request.resource.data.para == me()
+                ? request.resource.data.precio == null
+                : request.resource.data.precio is int);
 
-        // Cualquiera de los dos puede editarlo (nombre, precio, descripción, para quién) o borrarlo.
+        // Cualquiera de los dos puede editarlo o borrarlo, pero:
+        //  · el destinatario (para) no cambia;
+        //  · el precio solo lo pone o cambia quien NO es el destinatario;
+        //  · si el destinatario cambia el nombre o el detalle, el precio se borra.
         allow update: if esMiembro(cid)
           && premioValido(request.resource.data)
+          && request.resource.data.para == resource.data.para
           && request.resource.data.creador == resource.data.creador
-          && request.resource.data.creado == resource.data.creado;
+          && request.resource.data.creado == resource.data.creado
+          && (me() == resource.data.para
+                ? (cambioTexto() ? request.resource.data.precio == null
+                                 : request.resource.data.precio == resource.data.get('precio', null))
+                : request.resource.data.precio is int);
 
         allow delete: if esMiembro(cid);
 
+        function cambioTexto() {
+          return request.resource.data.diff(resource.data).affectedKeys().hasAny(['nombre', 'descripcion']);
+        }
+
         function premioValido(p) {
           return p.keys().hasOnly(['nombre', 'descripcion', 'precio', 'para', 'creador', 'creado'])
+            && p.keys().hasAll(['nombre', 'descripcion', 'precio', 'para', 'creador', 'creado'])
             && p.para in coupleAntes(cid).members
             && textoOk(p.nombre, 1, 60)
             && textoOk(p.descripcion, 0, 200)
-            && p.precio is int
-            && p.precio >= 1 && p.precio <= 100000;
+            && (p.precio == null || (p.precio is int && p.precio >= 1 && p.precio <= 100000));
         }
       }
 
@@ -197,6 +217,7 @@ service cloud.firestore {
 
         function cuponCoincideConPremio(c, p) {
           return p.para == me()             // solo los premios que son para vos
+            && p.precio is int              // y que ya tienen precio
             && c.vendedor != me()           // quien lo cumple es la otra persona
             && c.vendedor in coupleAntes(cid).members
             && c.nombre == p.nombre
