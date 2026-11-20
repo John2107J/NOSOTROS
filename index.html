@@ -67,6 +67,12 @@
     <input type="date" id="fechaInicio" onchange="Store.guardarFecha()" />
   </div>
 
+  <button class="poro-entry" onclick="Nav.irPorotitos()">
+    <span class="poro-entry-icon">🫘</span>
+    <span class="poro-entry-txt"><strong>Porotitos</strong><small>Sumá, restá y canjeá premios</small></span>
+    <span class="poro-entry-arrow">→</span>
+  </button>
+
   <div class="frase-card">
     <button class="edit-frase-btn" onclick="Frases.toggleEdit()" title="Editar frase">✏️</button>
     <p class="frase-display" id="fraseDisplay"></p>
@@ -102,6 +108,14 @@
   </div>
 
   <button class="back-btn" onclick="Nav.volver()">← Volver a la portada</button>
+</div>
+
+<!-- ==================== POROTITOS ==================== -->
+<div id="poro">
+  <p class="cine-tag">🫘 entre nosotros</p>
+  <h2 class="cine-headline">Porotitos</h2>
+  <div id="poroContenido"></div>
+  <button class="back-btn" onclick="Nav.volverDePorotitos()">← Volver</button>
 </div>
 
 <!-- ==================== MODAL EXPORTACIÓN ==================== -->

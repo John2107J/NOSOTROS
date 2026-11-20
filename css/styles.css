@@ -519,3 +519,158 @@ canvas { display: block; }
   transition: opacity 0.2s;
 }
 .back-btn:hover { opacity: 0.9; }
+
+/* =============================================
+   POROTITOS
+============================================= */
+#poro {
+  display: none;
+  min-height: 100vh;
+  flex-direction: column;
+  align-items: center;
+  padding: 48px 20px 60px;
+  background:
+    radial-gradient(ellipse 90% 50% at 50%  0%, #fce7f3 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 10% 85%, #d1fae5 0%, transparent 55%),
+    var(--cream);
+}
+#poro.visible { animation: slideIn 0.7s cubic-bezier(0.22,1,0.36,1) both; }
+#poro .cine-headline { margin-bottom: 28px; }
+#poroContenido { width: 100%; max-width: var(--max-w); display: flex; flex-direction: column; gap: 14px; }
+
+/* Botón de entrada desde la pantalla principal */
+.poro-entry {
+  display: flex; align-items: center; gap: 14px;
+  width: 100%; max-width: var(--max-w);
+  margin-bottom: 24px; padding: 16px 18px;
+  background: linear-gradient(135deg, #ffffff, #f0fdf4);
+  border: 1px solid var(--green-md); border-radius: var(--radius-card);
+  box-shadow: 0 4px 20px rgba(110,231,183,0.18);
+  font-family: var(--font-sans); text-align: left; cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.poro-entry:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(110,231,183,0.28); }
+.poro-entry-icon  { font-size: 30px; }
+.poro-entry-txt   { flex: 1; display: flex; flex-direction: column; gap: 2px; color: var(--green); }
+.poro-entry-txt strong { font-family: var(--font-serif); font-weight: 500; font-size: 18px; }
+.poro-entry-txt small  { font-size: 12px; opacity: 0.7; }
+.poro-entry-arrow { color: var(--green); opacity: 0.6; font-size: 18px; }
+
+/* Tarjetas */
+.poro-card {
+  background: white;
+  border: 1px solid var(--rose-md);
+  border-radius: var(--radius-card);
+  padding: 18px;
+  box-shadow: 0 4px 24px rgba(251,182,206,0.15);
+  display: flex; flex-direction: column; gap: 10px;
+}
+.poro-card.apagado { opacity: 0.6; }
+.poro-title { font-family: var(--font-serif); font-size: 17px; color: var(--rose); }
+.poro-desc  { font-size: 13px; color: var(--rose-dk); opacity: 0.7; line-height: 1.5; }
+.poro-desc code { font-size: 12px; background: var(--rose-lt); padding: 1px 5px; border-radius: 5px; }
+.poro-mini  { display: block; font-size: 11px; color: var(--rose-dk); opacity: 0.5; margin-top: 2px; }
+
+/* Saldos */
+.poro-saldos { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.poro-saldo  { padding: 18px 10px 14px; animation: none; }
+.cont-num.neg { color: #e11d48; }
+
+/* Formularios */
+.poro-row  { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.poro-row > .poro-input { flex: 1; min-width: 0; }
+.poro-ajuste, .poro-form { display: flex; flex-direction: column; gap: 8px; }
+.poro-ajuste .poro-row .poro-btn { flex: 1; }
+.poro-input {
+  width: 100%;
+  font-family: var(--font-sans); font-size: 16px; /* 16px evita el zoom automático en iPhone */
+  color: var(--rose-dk);
+  border: 1px solid var(--rose-md); border-radius: 10px;
+  padding: 10px 12px; background: #fff8fb; outline: none;
+  transition: border-color 0.2s;
+}
+.poro-input:focus { border-color: var(--rose); }
+.poro-input.cant  { max-width: 110px; flex: 0 0 auto; }
+.poro-input.codigo { text-transform: uppercase; letter-spacing: 0.3em; text-align: center; font-weight: 500; }
+.poro-ajuste .poro-input.cant { max-width: none; text-align: center; font-size: 22px; font-family: var(--font-serif); }
+
+.poro-btn {
+  padding: 10px 16px;
+  border-radius: var(--radius-btn);
+  font-family: var(--font-sans); font-size: 14px; font-weight: 500;
+  cursor: pointer;
+  background: white; color: var(--rose);
+  border: 1px solid var(--rose-md);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  white-space: nowrap;
+}
+.poro-btn:hover   { transform: translateY(-1px); }
+.poro-btn.primary { background: var(--rose); color: white; border-color: var(--rose); box-shadow: 0 4px 16px rgba(190,24,93,0.22); }
+.poro-btn.suma    { background: #ecfdf5; color: var(--green); border-color: var(--green-md); }
+.poro-btn.resta   { background: #fff1f2; color: #e11d48; border-color: #fecdd3; }
+.poro-link { background: none; border: none; color: inherit; font: inherit; text-decoration: underline; cursor: pointer; }
+
+.poro-codigo {
+  font-family: var(--font-serif); font-size: 40px; letter-spacing: 0.25em;
+  color: var(--rose); text-align: center; padding: 6px 0;
+}
+
+/* Pestañas */
+.poro-tabs {
+  display: flex; gap: 4px; padding: 4px;
+  background: white; border: 1px solid var(--rose-md); border-radius: 14px;
+  position: sticky; top: 8px; z-index: 5;
+}
+.poro-tab {
+  flex: 1 1 auto; padding: 9px 2px; border: none; border-radius: 10px;
+  background: none; color: var(--rose-dk); opacity: 0.65;
+  font-family: var(--font-sans); font-size: 12.5px; cursor: pointer;
+  white-space: nowrap;
+  display: inline-flex; align-items: center; justify-content: center; gap: 4px;
+}
+.poro-tab.on { background: var(--rose-lt); color: var(--rose); opacity: 1; font-weight: 500; }
+.poro-badge {
+  display: inline-block; min-width: 18px; padding: 0 5px; border-radius: 9px;
+  background: var(--rose); color: white; font-size: 11px; line-height: 18px;
+}
+
+/* Premios */
+.poro-premio { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.poro-premio > div:first-child { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.poro-premio-nombre { font-size: 15px; font-weight: 500; color: var(--rose-dk); overflow-wrap: anywhere; }
+.poro-precio  { font-size: 13px; color: var(--green); font-weight: 500; }
+.poro-acciones { display: flex; gap: 6px; flex-shrink: 0; }
+.poro-falta { font-size: 12px; color: #e11d48; opacity: 0.8; white-space: nowrap; }
+
+/* Cupones */
+.poro-cupon {
+  display: flex; gap: 12px; align-items: center;
+  padding: 12px; border: 1px dashed var(--rose-md); border-radius: 12px;
+  background: #fff8fb; cursor: pointer;
+}
+.poro-cupon input { width: 20px; height: 20px; accent-color: var(--green); flex-shrink: 0; }
+.poro-cupon-cuerpo { display: flex; flex-direction: column; min-width: 0; }
+.poro-cupon.usado { opacity: 0.5; background: #f9fafb; border-style: solid; border-color: #e5e7eb; }
+.poro-cupon.usado .poro-premio-nombre { text-decoration: line-through; }
+
+/* Historial */
+.poro-mov { display: flex; gap: 12px; align-items: flex-start; padding: 8px 0; border-bottom: 1px solid #fdf2f8; }
+.poro-mov:last-child { border-bottom: none; }
+.poro-mov-delta { font-family: var(--font-serif); font-size: 18px; min-width: 44px; text-align: right; }
+.poro-mov-delta.pos { color: var(--green); }
+.poro-mov-delta.neg { color: #e11d48; }
+.poro-mov-txt { font-size: 13px; color: var(--rose-dk); line-height: 1.45; overflow-wrap: anywhere; }
+
+.poro-pie { font-size: 11px; color: var(--rose-dk); opacity: 0.45; text-align: center; margin-top: 6px; }
+
+/* Aviso flotante */
+.poro-aviso {
+  position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  max-width: calc(100% - 40px);
+  background: var(--green); color: white;
+  padding: 11px 18px; border-radius: 14px;
+  font-size: 14px; box-shadow: 0 8px 28px rgba(0,0,0,0.18);
+  z-index: 1000; animation: slideIn 0.3s ease both;
+}
+.poro-aviso.error { background: #e11d48; }

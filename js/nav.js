@@ -33,4 +33,36 @@ function volver() {
   setTimeout(() => { portada.style.opacity = '1'; }, 30);
 }
 
-export const Nav = { entrar, volver };
+/**
+ * Porotitos se carga recién al abrirse (import dinámico): así Firebase
+ * no se descarga ni bloquea el resto de la app si no hay internet.
+ */
+function irPorotitos() {
+  Contador.detener();
+  const cine = document.getElementById('cine');
+  const poro = document.getElementById('poro');
+  cine.classList.remove('visible');
+  cine.style.display = 'none';
+  poro.style.display = 'flex';
+  poro.classList.add('visible');
+  window.scrollTo(0, 0);
+  import('./porotitos.js')
+    .then(m => m.Porotitos.abrir())
+    .catch(() => {
+      document.getElementById('poroContenido').innerHTML =
+        '<div class="poro-card"><p class="poro-desc">No se pudo cargar Porotitos. Revisá tu conexión.</p></div>';
+    });
+}
+
+function volverDePorotitos() {
+  const cine = document.getElementById('cine');
+  const poro = document.getElementById('poro');
+  poro.classList.remove('visible');
+  poro.style.display = 'none';
+  cine.style.display = 'flex';
+  cine.classList.add('visible');
+  window.scrollTo(0, 0);
+  Contador.iniciar();
+}
+
+export const Nav = { entrar, volver, irPorotitos, volverDePorotitos };
