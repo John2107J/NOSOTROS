@@ -1,4 +1,4 @@
-import { Frases } from './frases.js?v=202611202322';
+import { Frases } from './frases.js?v=202611202343';
 
 /**
  * UI — utilidades genéricas de interfaz (paneles colapsables, etc).
