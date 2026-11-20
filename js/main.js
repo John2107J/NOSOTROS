@@ -1,10 +1,9 @@
-import { Petals }   from './petals.js';
-import { Store }    from './store.js';
-import { Contador } from './contador.js';
-import { Frases }   from './frases.js';
-import { Sync }     from './sync.js';
-import { UI }        from './ui.js';
-import { Nav }       from './nav.js';
+import { Petals }   from './petals.js?v=202611202251';
+import { Store }    from './store.js?v=202611202251';
+import { Contador } from './contador.js?v=202611202251';
+import { Frases }   from './frases.js?v=202611202251';
+import { UI }        from './ui.js?v=202611202251';
+import { Nav }       from './nav.js?v=202611202251';
 
 /**
  * main.js — punto de entrada de la app.
@@ -17,7 +16,6 @@ import { Nav }       from './nav.js';
 window.Store    = Store;
 window.Contador = Contador;
 window.Frases   = Frases;
-window.Sync     = Sync;
 window.UI       = UI;
 window.Nav      = Nav;
 

@@ -21,7 +21,7 @@
   <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjogIk5vc290cm9zIPCfkpUiLCAic2hvcnRfbmFtZSI6ICJOb3NvdHJvcyDwn5KVIiwgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsICJzdGFydF91cmwiOiAiLiIsICJiYWNrZ3JvdW5kX2NvbG9yIjogIiNmY2U3ZjMiLCAidGhlbWVfY29sb3IiOiAiI2ZjZTdmMyIsICJpY29ucyI6IFt7InNyYyI6ICJkYXRhOmltYWdlL3N2Zyt4bWw7YmFzZTY0LFBITjJaeUI0Yld4dWN6MGlhSFIwY0RvdkwzZDNkeTUzTXk1dmNtY3ZNakF3TUM5emRtY2lJSFpwWlhkQ2IzZzlJakFnTUNBeE9EQWdNVGd3SWo0OGNtVmpkQ0IzYVdSMGFEMGlNVGd3SWlCb1pXbG5hSFE5SWpFNE1DSWdjbmc5SWpRd0lpQm1hV3hzUFNKMWNtd29JMmNwSWk4K1BHUmxabk0rUEd4cGJtVmhja2R5WVdScFpXNTBJR2xrUFNKbklpQjRNVDBpTUNVaUlIa3hQU0l3SlNJZ2VESTlJakV3TUNVaUlIa3lQU0l4TURBbElqNDhjM1J2Y0NCdlptWnpaWFE5SWpBbElpQnpkRzl3TFdOdmJHOXlQU0lqWm1ObE4yWXpJaTgrUEhOMGIzQWdiMlptYzJWMFBTSTFNQ1VpSUhOMGIzQXRZMjlzYjNJOUlpTm1ZbUkyWTJVaUx6NDhjM1J2Y0NCdlptWnpaWFE5SWpFd01DVWlJSE4wYjNBdFkyOXNiM0k5SWlOa01XWmhaVFVpTHo0OEwyeHBibVZoY2tkeVlXUnBaVzUwUGp3dlpHVm1jejQ4ZEdWNGRDQjRQU0k1TUNJZ2VUMGlNVEUwSWlCbWIyNTBMWE5wZW1VOUlqa3dJaUIwWlhoMExXRnVZMmh2Y2owaWJXbGtaR3hsSWo3d240eTRQQzkwWlhoMFBqd3ZjM1puUGc9PSIsICJzaXplcyI6ICI1MTJ4NTEyIiwgInR5cGUiOiAiaW1hZ2Uvc3ZnK3htbCJ9XX0=" />
 
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/styles.css?v=202611202251" />
 </head>
 <body>
 
@@ -58,6 +58,8 @@
   </div>
   <p class="minseg-line" id="minSegLine">— : — actualizando…</p>
 
+  <div id="cuentaEstado" class="cuenta-card" hidden></div>
+
   <div id="mesBadge">
     <p>🎉 ¡Hoy cumplen <strong id="mesNum">0</strong> meses juntos! Feliz mensiversario 💕</p>
   </div>
@@ -90,23 +92,6 @@
     </div>
   </div>
 
-  <div class="sync-section">
-    <button class="panel-toggle" onclick="UI.togglePanel('syncPanel','syncArrow')">
-      <span>🔄 Exportar / Importar datos</span>
-      <span id="syncArrow">▸</span>
-    </button>
-    <div class="collapsible" id="syncPanel">
-      <p class="sync-desc">Exportá el código de tus datos, copialo y pegalo en el otro dispositivo.</p>
-      <button class="sync-btn export" onclick="Sync.exportar()">⬇ Exportar — copiar código</button>
-      <div class="import-area">
-        <p class="sync-desc">Importar en este dispositivo — pegá el código acá:</p>
-        <textarea id="importTextarea" class="import-textarea" rows="3" placeholder="Pegá el código exportado aquí..."></textarea>
-        <button class="sync-btn import-paste" onclick="Sync.importarDesdeTexto()">⬆ Importar</button>
-      </div>
-      <div id="syncMsg" class="sync-msg"></div>
-    </div>
-  </div>
-
   <button class="back-btn" onclick="Nav.volver()">← Volver a la portada</button>
 </div>
 
@@ -121,20 +106,7 @@
   <button class="back-btn" onclick="Nav.volverDePorotitos()">← Volver</button>
 </div>
 
-<!-- ==================== MODAL EXPORTACIÓN ==================== -->
-<div id="exportModal" class="modal-overlay">
-  <div class="modal-box">
-    <p class="modal-title">Tus datos 💕</p>
-    <p class="modal-desc">Copiá este código completo y pegalo en "Importar" en el otro dispositivo. También podés mandarlo por WhatsApp.</p>
-    <textarea id="exportJson" class="modal-textarea" readonly></textarea>
-    <div class="modal-actions">
-      <button class="modal-btn-copy"  onclick="Sync.copiarJson()">📋 Copiar</button>
-      <button class="modal-btn-close" onclick="Sync.cerrarModal()">Cerrar</button>
-    </div>
-  </div>
-</div>
-
 <!-- ==================== SCRIPTS ==================== -->
-<script type="module" src="js/main.js"></script>
+<script type="module" src="js/main.js?v=202611202251"></script>
 </body>
 </html>

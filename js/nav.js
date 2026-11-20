@@ -1,6 +1,7 @@
-import { Store } from './store.js';
-import { Frases } from './frases.js';
-import { Contador } from './contador.js';
+import { Store } from './store.js?v=202611202251';
+import { Frases } from './frases.js?v=202611202251';
+import { Contador } from './contador.js?v=202611202251';
+import { Sync } from './sync.js?v=202611202251';
 
 /**
  * Nav — controla la transición entre la portada y la pantalla principal.
@@ -18,6 +19,7 @@ function entrar() {
     Frases.cargar();
     Frases.mostrarActual();
     Contador.iniciar();
+    Sync.iniciar();   // fecha y frases compartidas con la pareja (si hay sesión)
   }, 800);
 }
 
@@ -46,7 +48,7 @@ function irPorotitos() {
   poro.style.display = 'flex';
   poro.classList.add('visible');
   window.scrollTo(0, 0);
-  import('./porotitos.js')
+  import('./porotitos.js?v=202611202251')
     .then(m => m.Porotitos.abrir())
     .catch(() => {
       document.getElementById('poroContenido').innerHTML =
