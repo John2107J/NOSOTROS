@@ -1,0 +1,208 @@
+rules_version = '2';
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  Reglas de seguridad de "Nosotros" — sección Porotitos
+//
+//  Estructura:
+//    users/{uid}                         → { coupleId }
+//    couples/{codigo}                    → { members, nombres, saldos, ultimoMov, creado, nombreSeccion }
+//    couples/{codigo}/premios/{id}       → premio que puede comprar `para` (cualquiera lo crea)
+//    couples/{codigo}/cupones/{id}       → cupón obtenido al pagar un premio
+//    couples/{codigo}/movimientos/{id}   → historial (ajustes y compras)
+//
+//  Reglas del juego que se hacen cumplir acá (no en el navegador):
+//    · Nadie puede sumarse ni restarse porotitos a sí mismo.
+//    · La única forma de bajar tus propios porotitos es comprar un premio,
+//      y solo si te alcanza el saldo. Eso genera un cupón.
+//    · Cualquiera de los dos crea premios, para sí o para el otro.
+//      Solo podés comprar los premios que son para vos.
+//    · Cualquiera de los dos puede editar o borrar cualquier premio.
+//    · El nombre de la sección (por defecto "Corazoncitos") lo cambia cualquiera.
+//    · Cualquiera de los dos puede tildar un cupón como canjeado.
+//    · Todo cambio de saldo deja un movimiento en el historial (no se puede evitar).
+// ─────────────────────────────────────────────────────────────────────────────
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signed() { return request.auth != null; }
+    function me() { return request.auth.uid; }
+
+    function couplePath(cid) { return /databases/$(database)/documents/couples/$(cid); }
+    function movPath(cid, mid) { return /databases/$(database)/documents/couples/$(cid)/movimientos/$(mid); }
+    function cuponPath(cid, id) { return /databases/$(database)/documents/couples/$(cid)/cupones/$(id); }
+    function premioPath(cid, id) { return /databases/$(database)/documents/couples/$(cid)/premios/$(id); }
+
+    function coupleAntes(cid) { return get(couplePath(cid)).data; }
+    function coupleDespues(cid) { return getAfter(couplePath(cid)).data; }
+    function esMiembro(cid) { return signed() && me() in coupleAntes(cid).members; }
+
+    function textoOk(v, min, max) { return v is string && v.size() >= min && v.size() <= max; }
+
+    // ── Perfil propio ──────────────────────────────────────────────────────────
+    match /users/{userId} {
+      allow read, write: if signed() && me() == userId;
+    }
+
+    // ── Pareja ─────────────────────────────────────────────────────────────────
+    match /couples/{cid} {
+
+      // Cualquiera con sesión puede leer una pareja que todavía espera a su
+      // segunda persona (para poder unirse con el código). Una vez completa,
+      // solo la leen sus dos miembros.
+      // (resource == null: el código todavía no existe, para poder crear uno nuevo)
+      allow get: if signed() && (resource == null
+                                 || resource.data.members.size() < 2
+                                 || me() in resource.data.members);
+      allow list: if false;
+
+      allow create: if signed()
+        && request.resource.data.keys().hasOnly(['members', 'nombres', 'saldos', 'creado'])
+        && request.resource.data.members == [me()]
+        && request.resource.data.saldos.keys().hasOnly([me()])
+        && request.resource.data.saldos[me()] == 0
+        && request.resource.data.nombres.keys().hasOnly([me()])
+        && textoOk(request.resource.data.nombres[me()], 1, 40)
+        && request.resource.data.creado == request.time;
+
+      allow update: if signed() && (unirse() || moverSaldo() || renombrar());
+
+      // Cualquiera de los dos cambia el nombre de la sección.
+      function renombrar() {
+        return me() in resource.data.members
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['nombreSeccion'])
+          && textoOk(request.resource.data.nombreSeccion, 1, 30);
+      }
+      allow delete: if false;
+
+      // La segunda persona entra con el código.
+      function unirse() {
+        let d = request.resource.data;
+        let o = resource.data;
+        return !(me() in o.members)
+          && o.members.size() == 1
+          && d.diff(o).affectedKeys().hasOnly(['members', 'nombres', 'saldos'])
+          && d.members == o.members.concat([me()])
+          && d.saldos.diff(o.saldos).affectedKeys().hasOnly([me()])
+          && d.saldos[me()] == 0
+          && d.nombres.diff(o.nombres).affectedKeys().hasOnly([me()])
+          && textoOk(d.nombres[me()], 1, 40);
+      }
+
+      // Cualquier cambio de saldo debe venir acompañado, en la misma escritura,
+      // de un movimiento NUEVO que lo justifique (validado en /movimientos).
+      function moverSaldo() {
+        let d = request.resource.data;
+        let o = resource.data;
+        return me() in o.members
+          && o.members.size() == 2
+          && d.diff(o).affectedKeys().hasOnly(['saldos', 'ultimoMov'])
+          && d.ultimoMov is string
+          && !exists(movPath(cid, d.ultimoMov))
+          && existsAfter(movPath(cid, d.ultimoMov))
+          && d.saldos.diff(o.saldos).affectedKeys().hasOnly([getAfter(movPath(cid, d.ultimoMov)).data.para]);
+      }
+
+      // ── Movimientos (historial + justificación de cada cambio de saldo) ──────
+      match /movimientos/{mid} {
+        allow read: if esMiembro(cid);
+        allow update, delete: if false;
+
+        allow create: if esMiembro(cid)
+          && request.resource.data.keys().hasOnly(['tipo', 'de', 'para', 'delta', 'motivo', 'cuponId', 'ts'])
+          && request.resource.data.de == me()
+          && request.resource.data.ts == request.time
+          && request.resource.data.delta is int
+          && textoOk(request.resource.data.motivo, 0, 140)
+          && request.resource.data.para in coupleAntes(cid).members
+          && coupleDespues(cid).ultimoMov == mid
+          && coupleDespues(cid).saldos[request.resource.data.para]
+               == coupleAntes(cid).saldos[request.resource.data.para] + request.resource.data.delta
+          && (ajusteValido(request.resource.data) || compraValida(request.resource.data));
+
+        // Ajuste: solo a la OTRA persona, nunca a uno mismo.
+        function ajusteValido(m) {
+          return m.tipo == 'ajuste'
+            && m.para != me()
+            && m.delta != 0
+            && m.delta >= -1000 && m.delta <= 1000
+            && !('cuponId' in m);
+        }
+
+        // Compra: baja TU saldo exactamente el precio del cupón que se crea
+        // en la misma escritura, y solo si te alcanza.
+        function compraValida(m) {
+          return m.tipo == 'compra'
+            && m.para == me()
+            && m.cuponId is string
+            && !exists(cuponPath(cid, m.cuponId))
+            && existsAfter(cuponPath(cid, m.cuponId))
+            && getAfter(cuponPath(cid, m.cuponId)).data.comprador == me()
+            && getAfter(cuponPath(cid, m.cuponId)).data.movId == mid
+            && m.delta == -getAfter(cuponPath(cid, m.cuponId)).data.precio
+            && coupleAntes(cid).saldos[me()] >= getAfter(cuponPath(cid, m.cuponId)).data.precio;
+        }
+      }
+
+      // ── Premios ──────────────────────────────────────────────────────────────
+      match /premios/{pid} {
+        allow read: if esMiembro(cid);
+
+        allow create: if esMiembro(cid)
+          && premioValido(request.resource.data)
+          && request.resource.data.creador == me()
+          && request.resource.data.creado == request.time;
+
+        // Cualquiera de los dos puede editarlo (nombre, precio, descripción, para quién) o borrarlo.
+        allow update: if esMiembro(cid)
+          && premioValido(request.resource.data)
+          && request.resource.data.creador == resource.data.creador
+          && request.resource.data.creado == resource.data.creado;
+
+        allow delete: if esMiembro(cid);
+
+        function premioValido(p) {
+          return p.keys().hasOnly(['nombre', 'descripcion', 'precio', 'para', 'creador', 'creado'])
+            && p.para in coupleAntes(cid).members
+            && textoOk(p.nombre, 1, 60)
+            && textoOk(p.descripcion, 0, 200)
+            && p.precio is int
+            && p.precio >= 1 && p.precio <= 100000;
+        }
+      }
+
+      // ── Cupones ──────────────────────────────────────────────────────────────
+      match /cupones/{cuid} {
+        allow read: if esMiembro(cid);
+        allow delete: if false;
+
+        // Solo se crean junto con un movimiento de compra que descuenta el precio.
+        allow create: if esMiembro(cid)
+          && request.resource.data.keys().hasOnly(['premioId', 'nombre', 'precio', 'comprador', 'vendedor', 'movId', 'canjeado', 'ts'])
+          && request.resource.data.comprador == me()
+          && request.resource.data.canjeado == false
+          && request.resource.data.ts == request.time
+          && request.resource.data.movId is string
+          && cuponCoincideConPremio(request.resource.data, get(premioPath(cid, request.resource.data.premioId)).data)
+          && !exists(movPath(cid, request.resource.data.movId))
+          && existsAfter(movPath(cid, request.resource.data.movId))
+          && getAfter(movPath(cid, request.resource.data.movId)).data.tipo == 'compra'
+          && getAfter(movPath(cid, request.resource.data.movId)).data.cuponId == cuid;
+
+        function cuponCoincideConPremio(c, p) {
+          return p.para == me()             // solo los premios que son para vos
+            && c.vendedor != me()           // quien lo cumple es la otra persona
+            && c.vendedor in coupleAntes(cid).members
+            && c.nombre == p.nombre
+            && c.precio == p.precio;        // se paga el precio vigente del premio
+        }
+
+        // Cualquiera de los dos puede tildarlo (o destildarlo) como canjeado.
+        allow update: if esMiembro(cid)
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['canjeado', 'canjeadoPor', 'canjeadoEn'])
+          && request.resource.data.canjeado is bool
+          && (request.resource.data.canjeado == false
+              || (request.resource.data.canjeadoPor == me() && request.resource.data.canjeadoEn == request.time));
+      }
+    }
+  }
+}
