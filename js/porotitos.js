@@ -1,12 +1,13 @@
 /**
- * Porotitos — puntos que te da (o te saca) tu pareja y que podés gastar
- * en premios que ella/él creó para vos.
+ * Corazoncitos (antes "Porotitos"; el nombre lo elige la pareja) — puntos que te da
+ * (o te saca) tu pareja y que podés gastar en premios.
  *
  * Reglas (validadas en el servidor por firestore.rules):
- *  - Solo la otra persona puede sumarte o restarte porotitos. Podés quedar en negativo.
- *  - Vos solo bajás tus porotitos al comprar un premio (si te alcanza) → recibís un cupón.
- *  - Cada uno crea premios y les pone precio para que los compre el otro.
+ *  - Solo la otra persona puede sumarte o restarte puntos. Podés quedar en negativo.
+ *  - Vos solo bajás tus puntos al comprar un premio que es para vos (si te alcanza) → recibís un cupón.
+ *  - Cualquiera crea premios, para sí o para el otro; cualquiera los edita o borra.
  *  - Cualquiera de los dos puede tildar un cupón como canjeado.
+ *  - El nombre de la sección es compartido y editable (por defecto "Corazoncitos").
  *
  * Este módulo se carga solo cuando se abre la sección (import dinámico),
  * así el resto de la app funciona aunque Firebase no esté configurado o no haya internet.
@@ -15,6 +16,9 @@ import { firebaseConfig, firebaseConfigurado } from './firebase-config.js';
 
 const SDK = 'https://www.gstatic.com/firebasejs/10.12.2';
 const ALFABETO = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // sin 0/O ni 1/I para que no se confundan
+export const NOMBRE_DEFAULT = 'Corazoncitos';
+export const ICONO = '💗';
+const KEY_NOMBRE = 'seccionNombre_v1';   // copia local para mostrar el nombre antes de conectarse
 
 let fb = null;        // { auth, db, ...funciones del SDK }
 let iniciado = false;
@@ -30,6 +34,7 @@ const st = {
   tab: 'canjear',
   editando: null,       // id del premio en edición
   confirmar: null,      // id del premio cuya compra espera confirmación
+  renombrando: false,
   error: '',
   aviso: '',
 };
@@ -44,7 +49,7 @@ export async function abrir() {
   if (!firebaseConfigurado) {
     root.innerHTML = card(`
       <p class="poro-title">Falta conectar la base de datos</p>
-      <p class="poro-desc">Para usar Porotitos hay que configurar Firebase una sola vez.
+      <p class="poro-desc">Para usar esta sección hay que configurar Firebase una sola vez.
       Seguí los pasos de <strong>FIREBASE_SETUP.md</strong> y pegá la configuración en
       <code>js/firebase-config.js</code>.</p>`);
     return;
@@ -56,6 +61,10 @@ export async function abrir() {
   root.addEventListener('submit', onSubmit);
   root.addEventListener('change', onChange);
   root.addEventListener('focusout', onFocusOut);
+  document.getElementById('poroRenombrar')?.addEventListener('click', () => {
+    if (!st.couple || st.couple.members?.length < 2) return;
+    st.renombrando = !st.renombrando; render();
+  });
 
   try {
     await cargarSDK();
@@ -111,6 +120,9 @@ function escucharPareja(cid) {
   const base = fb.doc(fb.db, 'couples', cid);
   subs.couple.push(fb.onSnapshot(base, snap => {
     st.couple = snap.exists() ? snap.data() : null;
+    if (st.couple?.nombreSeccion) {
+      try { localStorage.setItem(KEY_NOMBRE, st.couple.nombreSeccion); } catch { /* sin storage */ }
+    }
     // Recién cuando somos miembros podemos leer las subcolecciones.
     if (st.couple && st.couple.members.includes(st.user.uid) && subs.couple.length === 1) {
       escucharSub(cid);
@@ -219,7 +231,8 @@ async function comprar(premioId) {
   const p = st.premios.find(x => x.id === premioId);
   if (!p) return;
   const uid = st.user.uid;
-  if (saldo(uid) < p.precio) { aviso('No te alcanzan los porotitos.', true); return; }
+  if (p.para !== uid) return;
+  if (saldo(uid) < p.precio) { aviso(`No te alcanzan los ${unidad(2)}.`, true); return; }
 
   const cref = fb.doc(fb.db, 'couples', st.coupleId);
   const mref = fb.doc(fb.collection(cref, 'movimientos'));
@@ -227,7 +240,7 @@ async function comprar(premioId) {
   const b = fb.writeBatch(fb.db);
   b.set(kref, {
     premioId: p.id, nombre: p.nombre, precio: p.precio,
-    comprador: uid, vendedor: p.creador, movId: mref.id,
+    comprador: uid, vendedor: otroUid(), movId: mref.id,
     canjeado: false, ts: fb.serverTimestamp(),
   });
   b.set(mref, { tipo: 'compra', de: uid, para: uid, delta: -p.precio, motivo: p.nombre, cuponId: kref.id, ts: fb.serverTimestamp() });
@@ -245,15 +258,26 @@ async function guardarPremio(datos, id) {
   if (!nombreP) { aviso('Ponele un nombre al premio.', true); return false; }
   if (!precio || precio < 1 || precio > 100000) { aviso('El precio tiene que ser un número de 1 en adelante.', true); return false; }
   const descripcion = (datos.descripcion || '').trim().slice(0, 200);
+  const para = st.couple.members.includes(datos.para) ? datos.para : otroUid();
   const col = fb.collection(fb.db, 'couples', st.coupleId, 'premios');
   try {
     if (id) {
-      await fb.updateDoc(fb.doc(col, id), { nombre: nombreP, precio, descripcion });
+      await fb.updateDoc(fb.doc(col, id), { nombre: nombreP, precio, descripcion, para });
     } else {
-      await fb.addDoc(col, { nombre: nombreP, precio, descripcion, creador: st.user.uid, creado: fb.serverTimestamp() });
+      await fb.addDoc(col, { nombre: nombreP, precio, descripcion, para, creador: st.user.uid, creado: fb.serverTimestamp() });
     }
     return true;
   } catch (err) { mostrarError(err); return false; }
+}
+
+async function renombrar(nuevo) {
+  const n = (nuevo || '').trim().slice(0, 30);
+  if (!n) { aviso('Escribí un nombre.', true); return; }
+  try {
+    await fb.updateDoc(fb.doc(fb.db, 'couples', st.coupleId), { nombreSeccion: n });
+    st.renombrando = false;
+    aviso(`Ahora la sección se llama "${n}" ${ICONO}`);
+  } catch (err) { mostrarError(err); }
 }
 
 async function borrarPremio(id) {
@@ -298,9 +322,11 @@ function onClick(e) {
     case 'cancelar-compra': st.confirmar = null; render(); break;
     case 'editar':   st.editando = id; render(); break;
     case 'cancelar-edicion': st.editando = null; render(); break;
+    case 'cancelar-renombre': st.renombrando = false; render(); break;
+    case 'nombre-default': renombrar(NOMBRE_DEFAULT); break;
     case 'borrar':
       if (btn.dataset.seguro) borrarPremio(id);
-      else { btn.dataset.seguro = '1'; btn.textContent = '¿Borrar?'; }
+      else { btn.dataset.seguro = '1'; btn.textContent = '¿Borrar?'; ultimoHtml = ''; }
       break;
   }
 }
@@ -317,6 +343,7 @@ async function onSubmit(e) {
       await ajustar(signo, datos.cantidad, datos.motivo);
       break;
     }
+    case 'renombrar': renombrar(datos.nombre); break;
     case 'premio':
       if (await guardarPremio(datos, f.dataset.id)) { st.editando = null; f.reset(); render(); }
       break;
@@ -340,11 +367,26 @@ function render() {
   if (escribiendo) { renderPendiente = true; renderAvisos(); return; }
 
   renderPendiente = false;
-  root.innerHTML = vista() + avisosHtml();
+  const html = vista() + avisosHtml();
+  // Solo redibujamos si algo cambió: evita parpadeos y toques perdidos.
+  if (html !== ultimoHtml) { root.innerHTML = html; ultimoHtml = html; }
+  pintarNombre();
+}
+
+/** Actualiza el título de la sección, el botón de entrada y el lápiz de renombrar. */
+export function pintarNombre() {
+  const n = seccion();
+  const t = document.getElementById('poroTitulo');
+  const e = document.getElementById('poroEntryNombre');
+  const r = document.getElementById('poroRenombrar');
+  if (t) t.textContent = n;
+  if (e) e.textContent = n;
+  if (r) r.hidden = !(st.couple?.members?.length === 2 && st.user && st.couple.members.includes(st.user.uid));
 }
 
 // Si llegaron datos nuevos mientras se escribía, refrescamos al salir del campo.
 let renderPendiente = false;
+let ultimoHtml = '';
 function onFocusOut() {
   setTimeout(() => {
     const a = document.activeElement;
@@ -365,9 +407,9 @@ function vista() {
 
 function vistaLogin() {
   return card(`
-    <p class="poro-title">🫘 Porotitos</p>
-    <p class="poro-desc">Tu pareja te da porotitos (o te los saca 😅) y vos los canjeás
-    por los premios que ella/él inventó para vos. Para que funcione en los dos celulares,
+    <p class="poro-title">${ICONO} ${esc(seccion())}</p>
+    <p class="poro-desc">Tu pareja te da ${esc(unidad(2))} (o te los saca 😅) y vos los canjeás
+    por premios. Para que funcione en los dos celulares,
     cada uno inicia sesión con su cuenta de Google.</p>
     <button class="poro-btn primary" data-a="login">Entrar con Google</button>`);
 }
@@ -397,16 +439,26 @@ function vistaPrincipal() {
   const yo = st.user.uid, otro = otroUid();
   const tabs = [
     ['canjear', 'Canjear'],
-    ['mios', 'Mis premios'],
+    ['premios', 'Premios'],
     ['cupones', 'Cupones'],
     ['historial', 'Historial'],
   ];
   const pendientes = st.cupones.filter(c => !c.canjeado).length;
-  return `
+  const renombre = st.renombrando ? card(`
+      <p class="poro-title">Nombre de la sección</p>
+      <form data-f="renombrar" class="poro-row">
+        <input name="nombre" maxlength="30" class="poro-input" value="${esc(seccion())}" required />
+        <button class="poro-btn primary">Guardar</button>
+      </form>
+      <div class="poro-row">
+        <button type="button" class="poro-link" data-a="nombre-default">Volver a "${NOMBRE_DEFAULT}"</button>
+        <button type="button" class="poro-link" data-a="cancelar-renombre">Cancelar</button>
+      </div>`) : '';
+  return `${renombre}
     <div class="poro-saldos">
       <div class="cont-card poro-saldo">
         <span class="cont-num ${saldo(yo) < 0 ? 'neg' : ''}">${saldo(yo)}</span>
-        <span class="cont-label">Tus porotitos</span>
+        <span class="cont-label">Tus ${esc(unidad(2))}</span>
         <span class="poro-mini">Solo ${esc(nombre(otro))} puede cambiarlos</span>
       </div>
       <div class="cont-card poro-saldo">
@@ -417,7 +469,7 @@ function vistaPrincipal() {
     </div>
 
     ${card(`
-      <p class="poro-title">Darle o sacarle porotitos a ${esc(nombre(otro))}</p>
+      <p class="poro-title">Darle o sacarle ${esc(unidad(2))} a ${esc(nombre(otro))}</p>
       <form data-f="ajuste" class="poro-ajuste">
         <input name="cantidad" type="number" inputmode="numeric" min="1" max="1000" value="1" class="poro-input cant" required />
         <input name="motivo" maxlength="140" class="poro-input" placeholder="¿Por qué? (opcional)" />
@@ -430,15 +482,14 @@ function vistaPrincipal() {
     <div class="poro-tabs">
       ${tabs.map(([k, t]) => `<button class="poro-tab ${st.tab === k ? 'on' : ''}" data-a="tab" data-tab="${k}">${t}${k === 'cupones' && pendientes ? ` <span class="poro-badge">${pendientes}</span>` : ''}</button>`).join('')}
     </div>
-    ${{ canjear: tabCanjear, mios: tabMios, cupones: tabCupones, historial: tabHistorial }[st.tab]()}
+    ${{ canjear: tabCanjear, premios: tabPremios, cupones: tabCupones, historial: tabHistorial }[st.tab]()}
   `;
 }
 
 function tabCanjear() {
-  const otro = otroUid();
-  const lista = st.premios.filter(p => p.creador === otro);
+  const lista = st.premios.filter(p => p.para === st.user.uid);
   const mio = saldo(st.user.uid);
-  if (!lista.length) return card(`<p class="poro-desc">${esc(nombre(otro))} todavía no cargó premios para vos. ¡Pedile que agregue algunos!</p>`);
+  if (!lista.length) return card(`<p class="poro-desc">Todavía no hay premios para vos. Podés agregar los que te gustaría en la pestaña <strong>Premios</strong>, o pedirle a ${esc(nombre(otroUid()))} que te cargue alguno.</p>`);
   return lista.map(p => {
     const falta = p.precio - mio;
     const conf = st.confirmar === p.id;
@@ -452,18 +503,23 @@ function tabCanjear() {
         <div>
           <p class="poro-premio-nombre">${esc(p.nombre)}</p>
           ${p.descripcion ? `<p class="poro-desc">${esc(p.descripcion)}</p>` : ''}
-          <p class="poro-precio">🫘 ${p.precio}</p>
+          <p class="poro-precio">${ICONO} ${p.precio}</p>
         </div>
         <div class="poro-acciones">${accion}</div>
       </div>`, falta > 0 ? 'apagado' : '');
   }).join('');
 }
 
-function tabMios() {
-  const otro = otroUid();
-  const lista = st.premios.filter(p => p.creador === st.user.uid);
-  const form = (p = {}) => `
+function tabPremios() {
+  const yo = st.user.uid, otro = otroUid();
+  const form = (p = {}) => {
+    const para = p.para || otro;
+    return `
     <form data-f="premio" ${p.id ? `data-id="${p.id}"` : ''} class="poro-form">
+      <div class="poro-para">
+        <label><input type="radio" name="para" value="${otro}" ${para === otro ? 'checked' : ''} /> Para ${esc(nombre(otro))}</label>
+        <label><input type="radio" name="para" value="${yo}" ${para === yo ? 'checked' : ''} /> Para mí</label>
+      </div>
       <input name="nombre" maxlength="60" class="poro-input" placeholder="Premio (ej: Masajes 15 min)" value="${esc(p.nombre || '')}" required />
       <input name="descripcion" maxlength="200" class="poro-input" placeholder="Detalle (opcional)" value="${esc(p.descripcion || '')}" />
       <div class="poro-row">
@@ -472,25 +528,29 @@ function tabMios() {
         ${p.id ? '<button type="button" class="poro-btn" data-a="cancelar-edicion">Cancelar</button>' : ''}
       </div>
     </form>`;
+  };
+  const item = p => st.editando === p.id ? card(form(p)) : card(`
+    <div class="poro-premio">
+      <div>
+        <p class="poro-premio-nombre">${esc(p.nombre)}</p>
+        ${p.descripcion ? `<p class="poro-desc">${esc(p.descripcion)}</p>` : ''}
+        <p class="poro-precio">${ICONO} ${p.precio}</p>
+        <span class="poro-mini">Lo agregó ${esc(nombre(p.creador))}</span>
+      </div>
+      <div class="poro-acciones">
+        <button class="poro-btn" data-a="editar" data-id="${p.id}">Editar</button>
+        <button class="poro-btn resta" data-a="borrar" data-id="${p.id}">Borrar</button>
+      </div>
+    </div>`);
+  const grupo = (titulo, lista) => `<p class="poro-subtitulo">${titulo}</p>` +
+    (lista.length ? lista.map(item).join('') : card('<p class="poro-desc">Ninguno todavía.</p>'));
 
   return card(`
-      <p class="poro-title">Nuevo premio para ${esc(nombre(otro))}</p>
-      <p class="poro-desc">Vos elegís el premio y cuántos porotitos cuesta.</p>
+      <p class="poro-title">Nuevo premio</p>
+      <p class="poro-desc">Cargá premios para ${esc(nombre(otro))} o los que te gustaría ganarte vos, con su precio en ${esc(unidad(2))}.</p>
       ${st.editando ? '' : form()}`) +
-    lista.map(p => st.editando === p.id
-      ? card(form(p))
-      : card(`
-        <div class="poro-premio">
-          <div>
-            <p class="poro-premio-nombre">${esc(p.nombre)}</p>
-            ${p.descripcion ? `<p class="poro-desc">${esc(p.descripcion)}</p>` : ''}
-            <p class="poro-precio">🫘 ${p.precio}</p>
-          </div>
-          <div class="poro-acciones">
-            <button class="poro-btn" data-a="editar" data-id="${p.id}">Editar</button>
-            <button class="poro-btn resta" data-a="borrar" data-id="${p.id}">Borrar</button>
-          </div>
-        </div>`)).join('');
+    grupo(`Para ${esc(nombre(otro))}`, st.premios.filter(p => p.para === otro)) +
+    grupo('Para vos', st.premios.filter(p => p.para === yo));
 }
 
 function tabCupones() {
@@ -501,7 +561,7 @@ function tabCupones() {
       <input type="checkbox" data-cupon="${c.id}" ${c.canjeado ? 'checked' : ''} />
       <span class="poro-cupon-cuerpo">
         <span class="poro-premio-nombre">🎟️ ${esc(c.nombre)}</span>
-        <span class="poro-mini">🫘 ${c.precio} · ${fecha(c.ts)}${c.canjeado ? ` · canjeado${c.canjeadoPor ? ' por ' + esc(nombre(c.canjeadoPor)) : ''}` : ''}</span>
+        <span class="poro-mini">${ICONO} ${c.precio} · ${fecha(c.ts)}${c.canjeado ? ` · canjeado${c.canjeadoPor ? ' por ' + esc(nombre(c.canjeadoPor)) : ''}` : ''}</span>
       </span>
     </label>`;
   const mios = orden(st.cupones.filter(c => c.comprador === yo));
@@ -556,6 +616,7 @@ function renderAvisos() {
   const root = el();
   root.querySelector('.poro-aviso')?.remove();
   root.insertAdjacentHTML('beforeend', avisosHtml());
+  ultimoHtml = '';
 }
 function mostrarError(err) {
   console.error(err);
@@ -572,7 +633,16 @@ function card(html, extra = '') { return `<div class="poro-card ${extra}">${html
 function otroUid() { return st.couple.members.find(u => u !== st.user.uid); }
 function saldo(uid) { return st.couple?.saldos?.[uid] ?? 0; }
 function nombre(uid) { return uid === st.user?.uid ? 'vos' : (st.couple?.nombres?.[uid] || 'tu pareja'); }
-function plural(n) { return n === 1 ? 'porotito' : 'porotitos'; }
+function seccion() {
+  if (st.couple?.nombreSeccion) return st.couple.nombreSeccion;
+  try { return localStorage.getItem(KEY_NOMBRE) || NOMBRE_DEFAULT; } catch { return NOMBRE_DEFAULT; }
+}
+/** Nombre de la unidad en minúscula: "corazoncitos" / "corazoncito". */
+function unidad(n) {
+  const pl = seccion().toLowerCase();
+  return n === 1 && pl.length > 1 && pl.endsWith('s') ? pl.slice(0, -1) : pl;
+}
+function plural(n) { return unidad(n); }
 function fecha(ts) {
   if (!ts?.toDate) return 'recién';
   return ts.toDate().toLocaleDateString('es-AR', { day: 'numeric', month: 'short' });
@@ -581,4 +651,4 @@ function esc(s) {
   return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 
-export const Porotitos = { abrir };
+export const Porotitos = { abrir, pintarNombre };

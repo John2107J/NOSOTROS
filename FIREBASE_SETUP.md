@@ -1,6 +1,6 @@
-# Configurar Firebase para Porotitos (una sola vez, ~10 minutos)
+# Configurar Firebase para Corazoncitos (una sola vez, ~10 minutos)
 
-Porotitos guarda los datos en una base compartida (Firebase, de Google, gratis para este uso)
+La sección Corazoncitos (antes Porotitos; el nombre se puede cambiar) guarda los datos en una base compartida (Firebase, de Google, gratis para este uso)
 para que los dos celulares vean lo mismo en tiempo real.
 
 ## 1. Crear el proyecto
@@ -23,8 +23,8 @@ para que los dos celulares vean lo mismo en tiempo real.
 2. Borrá todo lo que hay y pegá el contenido completo del archivo `firestore.rules` de este repo.
 3. **Publicar**.
 
-Estas reglas son las que impiden que alguien se sume porotitos a sí mismo, cambie el precio
-de un premio ajeno o canjee sin saldo, aunque intente hacerlo "por fuera" de la app.
+Estas reglas son las que impiden que alguien se sume puntos a sí mismo, canjee un premio
+que no es para él/ella o canjee sin saldo, aunque intente hacerlo "por fuera" de la app.
 
 ## 5. Conectar la app
 1. Arriba a la izquierda, el engranaje ⚙️ → **Configuración del proyecto**.
@@ -38,7 +38,7 @@ de un premio ajeno o canjee sin saldo, aunque intente hacerlo "por fuera" de la 
 > son las reglas del paso 4.
 
 ## 6. Usarla
-1. Uno de los dos entra a **Porotitos → Entrar con Google → Crear nuestro espacio**.
+1. Uno de los dos entra a **Corazoncitos → Entrar con Google → Crear nuestro espacio**.
 2. Comparte el código de 6 letras.
 3. El otro entra con su cuenta de Google → **Tengo un código** → lo pega → **Unirme**.
 

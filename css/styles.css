@@ -674,3 +674,24 @@ canvas { display: block; }
   z-index: 1000; animation: slideIn 0.3s ease both;
 }
 .poro-aviso.error { background: #e11d48; }
+
+/* Corazoncitos: título editable, destinatario del premio, subtítulos */
+.poro-headline { display: flex; align-items: center; justify-content: center; gap: 8px; }
+.poro-renombrar {
+  background: none; border: none; font-size: 16px; cursor: pointer;
+  opacity: 0.45; transition: opacity 0.2s; padding: 4px;
+}
+.poro-renombrar:hover { opacity: 1; }
+.poro-renombrar[hidden] { display: none; }
+.poro-para { display: flex; gap: 8px; }
+.poro-para label {
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 9px 8px; border: 1px solid var(--rose-md); border-radius: 10px;
+  font-size: 13px; color: var(--rose-dk); cursor: pointer; background: #fff8fb;
+}
+.poro-para label:has(input:checked) { background: var(--rose-lt); border-color: var(--rose); color: var(--rose); font-weight: 500; }
+.poro-para input { accent-color: var(--rose); }
+.poro-subtitulo {
+  font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--rose); opacity: 0.6; margin: 6px 4px -4px;
+}

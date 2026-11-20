@@ -22,3 +22,10 @@ window.UI       = UI;
 window.Nav      = Nav;
 
 Petals.init();
+
+// Nombre de la sección de puntos (lo elige la pareja; se guarda una copia local
+// para mostrarlo en el botón de entrada sin tener que conectarse).
+try {
+  const n = localStorage.getItem('seccionNombre_v1');
+  if (n) document.getElementById('poroEntryNombre').textContent = n;
+} catch { /* sin storage */ }

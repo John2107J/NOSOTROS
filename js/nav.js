@@ -34,7 +34,7 @@ function volver() {
 }
 
 /**
- * Porotitos se carga recién al abrirse (import dinámico): así Firebase
+ * La sección de puntos (Corazoncitos) se carga recién al abrirse (import dinámico): así Firebase
  * no se descarga ni bloquea el resto de la app si no hay internet.
  */
 function irPorotitos() {
@@ -50,7 +50,7 @@ function irPorotitos() {
     .then(m => m.Porotitos.abrir())
     .catch(() => {
       document.getElementById('poroContenido').innerHTML =
-        '<div class="poro-card"><p class="poro-desc">No se pudo cargar Porotitos. Revisá tu conexión.</p></div>';
+        '<div class="poro-card"><p class="poro-desc">No se pudo cargar la sección. Revisá tu conexión.</p></div>';
     });
 }
 

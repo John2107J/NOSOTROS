@@ -5,8 +5,8 @@ rules_version = '2';
 //
 //  Estructura:
 //    users/{uid}                         → { coupleId }
-//    couples/{codigo}                    → { members, nombres, saldos, ultimoMov, creado }
-//    couples/{codigo}/premios/{id}       → premio que UNO crea para que el OTRO compre
+//    couples/{codigo}                    → { members, nombres, saldos, ultimoMov, creado, nombreSeccion }
+//    couples/{codigo}/premios/{id}       → premio que puede comprar `para` (cualquiera lo crea)
 //    couples/{codigo}/cupones/{id}       → cupón obtenido al pagar un premio
 //    couples/{codigo}/movimientos/{id}   → historial (ajustes y compras)
 //
@@ -14,8 +14,10 @@ rules_version = '2';
 //    · Nadie puede sumarse ni restarse porotitos a sí mismo.
 //    · La única forma de bajar tus propios porotitos es comprar un premio,
 //      y solo si te alcanza el saldo. Eso genera un cupón.
-//    · Solo podés comprar premios que creó la otra persona.
-//    · Solo quien creó un premio puede cambiar su nombre o precio, o borrarlo.
+//    · Cualquiera de los dos crea premios, para sí o para el otro.
+//      Solo podés comprar los premios que son para vos.
+//    · Cualquiera de los dos puede editar o borrar cualquier premio.
+//    · El nombre de la sección (por defecto "Corazoncitos") lo cambia cualquiera.
 //    · Cualquiera de los dos puede tildar un cupón como canjeado.
 //    · Todo cambio de saldo deja un movimiento en el historial (no se puede evitar).
 // ─────────────────────────────────────────────────────────────────────────────
@@ -62,7 +64,14 @@ service cloud.firestore {
         && textoOk(request.resource.data.nombres[me()], 1, 40)
         && request.resource.data.creado == request.time;
 
-      allow update: if signed() && (unirse() || moverSaldo());
+      allow update: if signed() && (unirse() || moverSaldo() || renombrar());
+
+      // Cualquiera de los dos cambia el nombre de la sección.
+      function renombrar() {
+        return me() in resource.data.members
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['nombreSeccion'])
+          && textoOk(request.resource.data.nombreSeccion, 1, 30);
+      }
       allow delete: if false;
 
       // La segunda persona entra con el código.
@@ -143,17 +152,17 @@ service cloud.firestore {
           && request.resource.data.creador == me()
           && request.resource.data.creado == request.time;
 
-        // Solo quien lo creó puede editarlo (nombre, precio, descripción).
+        // Cualquiera de los dos puede editarlo (nombre, precio, descripción, para quién) o borrarlo.
         allow update: if esMiembro(cid)
-          && resource.data.creador == me()
           && premioValido(request.resource.data)
           && request.resource.data.creador == resource.data.creador
           && request.resource.data.creado == resource.data.creado;
 
-        allow delete: if esMiembro(cid) && resource.data.creador == me();
+        allow delete: if esMiembro(cid);
 
         function premioValido(p) {
-          return p.keys().hasOnly(['nombre', 'descripcion', 'precio', 'creador', 'creado'])
+          return p.keys().hasOnly(['nombre', 'descripcion', 'precio', 'para', 'creador', 'creado'])
+            && p.para in coupleAntes(cid).members
             && textoOk(p.nombre, 1, 60)
             && textoOk(p.descripcion, 0, 200)
             && p.precio is int
@@ -180,10 +189,11 @@ service cloud.firestore {
           && getAfter(movPath(cid, request.resource.data.movId)).data.cuponId == cuid;
 
         function cuponCoincideConPremio(c, p) {
-          return p.creador != me()          // no podés comprar tus propios premios
-            && c.vendedor == p.creador
+          return p.para == me()             // solo los premios que son para vos
+            && c.vendedor != me()           // quien lo cumple es la otra persona
+            && c.vendedor in coupleAntes(cid).members
             && c.nombre == p.nombre
-            && c.precio == p.precio;        // el precio lo pone quien creó el premio
+            && c.precio == p.precio;        // se paga el precio vigente del premio
         }
 
         // Cualquiera de los dos puede tildarlo (o destildarlo) como canjeado.

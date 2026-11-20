@@ -68,8 +68,8 @@
   </div>
 
   <button class="poro-entry" onclick="Nav.irPorotitos()">
-    <span class="poro-entry-icon">🫘</span>
-    <span class="poro-entry-txt"><strong>Porotitos</strong><small>Sumá, restá y canjeá premios</small></span>
+    <span class="poro-entry-icon">💗</span>
+    <span class="poro-entry-txt"><strong id="poroEntryNombre">Corazoncitos</strong><small>Sumá, restá y canjeá premios</small></span>
     <span class="poro-entry-arrow">→</span>
   </button>
 
@@ -112,8 +112,11 @@
 
 <!-- ==================== POROTITOS ==================== -->
 <div id="poro">
-  <p class="cine-tag">🫘 entre nosotros</p>
-  <h2 class="cine-headline">Porotitos</h2>
+  <p class="cine-tag">💕 entre nosotros</p>
+  <h2 class="cine-headline poro-headline">
+    <span id="poroTitulo">Corazoncitos</span>
+    <button id="poroRenombrar" class="poro-renombrar" title="Cambiar el nombre" hidden>✏️</button>
+  </h2>
   <div id="poroContenido"></div>
   <button class="back-btn" onclick="Nav.volverDePorotitos()">← Volver</button>
 </div>
