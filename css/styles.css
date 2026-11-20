@@ -619,3 +619,10 @@ canvas { display: block; }
   background: white; color: var(--rose); border: 1px solid var(--rose-md);
 }
 .cuenta-btn.primary { background: var(--rose); color: white; border-color: var(--rose); }
+
+/* Precio de premios: lo pone quien NO recibe el premio */
+.poro-nota-precio { display: none; }
+.poro-form:has(input[data-yo]:checked) .poro-precio-campo { display: none; }
+.poro-form:has(input[data-yo]:checked) .poro-nota-precio  { display: block; }
+.poro-falta.espera { color: var(--rose-dk); opacity: 0.6; white-space: normal; font-style: italic; }
+.poro-card.destacado { border-color: var(--rose); box-shadow: 0 4px 24px rgba(190,24,93,0.15); }

@@ -10,7 +10,7 @@
  * El SDK se importa desde la CDN de Google con import dinámico, así la app
  * abre igual aunque no haya internet o Firebase no esté configurado.
  */
-import { firebaseConfig, firebaseConfigurado } from './firebase-config.js?v=202611202251';
+import { firebaseConfig, firebaseConfigurado } from './firebase-config.js?v=202611202322';
 
 const SDK = 'https://www.gstatic.com/firebasejs/10.12.2';
 

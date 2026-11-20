@@ -6,13 +6,15 @@
  *  - Solo la otra persona puede sumarte o restarte puntos. Podés quedar en negativo.
  *  - Vos solo bajás tus puntos al comprar un premio que es para vos (si te alcanza) → recibís un cupón.
  *  - Cualquiera crea premios, para sí o para el otro; cualquiera los edita o borra.
+ *  - El precio lo pone siempre quien NO recibe el premio. Uno cargado para uno mismo
+ *    queda "esperando precio" (y vuelve a quedar así si le cambiás nombre o detalle).
  *  - Cualquiera de los dos puede tildar un cupón como canjeado.
  *  - El nombre de la sección es compartido y editable (por defecto "Corazoncitos").
  *
  * Este módulo se carga solo cuando se abre la sección (import dinámico).
  * La sesión y la pareja las maneja nube.js (compartido con el resto de la app).
  */
-import * as Nube from './nube.js?v=202611202251';
+import * as Nube from './nube.js?v=202611202322';
 const ALFABETO = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // sin 0/O ni 1/I para que no se confundan
 export const NOMBRE_DEFAULT = 'Corazoncitos';
 export const ICONO = '💗';
@@ -182,7 +184,7 @@ async function comprar(premioId) {
   const p = st.premios.find(x => x.id === premioId);
   if (!p) return;
   const uid = st.user.uid;
-  if (p.para !== uid) return;
+  if (p.para !== uid || p.precio == null) return;
   if (saldo(uid) < p.precio) { aviso(`No te alcanzan los ${unidad(2)}.`, true); return; }
 
   const cref = fb.doc(fb.db, 'couples', st.coupleId);
@@ -204,19 +206,39 @@ async function comprar(premioId) {
 }
 
 async function guardarPremio(datos, id) {
-  const nombreP = datos.nombre.trim().slice(0, 60);
-  const precio = Math.trunc(Number(datos.precio));
-  if (!nombreP) { aviso('Ponele un nombre al premio.', true); return false; }
-  if (!precio || precio < 1 || precio > 100000) { aviso('El precio tiene que ser un número de 1 en adelante.', true); return false; }
+  const yo = st.user.uid;
+  const nombreP = (datos.nombre || '').trim().slice(0, 60);
   const descripcion = (datos.descripcion || '').trim().slice(0, 200);
-  const para = st.couple.members.includes(datos.para) ? datos.para : otroUid();
+  if (!nombreP) { aviso('Ponele un nombre al premio.', true); return false; }
+
+  const previo = id ? st.premios.find(x => x.id === id) : null;
+  if (id && !previo) return false;
+  // El destinatario no cambia una vez creado el premio.
+  const para = previo ? previo.para : (st.couple.members.includes(datos.para) ? datos.para : otroUid());
+
+  let precio;
+  let avisoPrecio = '';
+  if (para === yo) {
+    // Premio para mí: el precio lo pone mi pareja. Si cambio el texto, lo pierde.
+    const cambioTexto = previo && (previo.nombre !== nombreP || (previo.descripcion || '') !== descripcion);
+    precio = !previo || cambioTexto ? null : (previo.precio ?? null);
+    if (previo && cambioTexto && previo.precio != null) {
+      avisoPrecio = `Cambiaste el premio, así que ${nombre(otroUid())} tiene que volver a ponerle precio.`;
+    }
+  } else {
+    precio = Math.trunc(Number(datos.precio));
+    if (!precio || precio < 1 || precio > 100000) { aviso('Ponele un precio de 1 en adelante.', true); return false; }
+  }
+
   const col = fb.collection(fb.db, 'couples', st.coupleId, 'premios');
   try {
     if (id) {
-      await fb.updateDoc(fb.doc(col, id), { nombre: nombreP, precio, descripcion, para });
+      await fb.updateDoc(fb.doc(col, id), { nombre: nombreP, descripcion, precio });
     } else {
-      await fb.addDoc(col, { nombre: nombreP, precio, descripcion, para, creador: st.user.uid, creado: fb.serverTimestamp() });
+      await fb.addDoc(col, { nombre: nombreP, descripcion, precio, para, creador: yo, creado: fb.serverTimestamp() });
+      if (para === yo) avisoPrecio = `Listo. Ahora ${nombre(otroUid())} tiene que ponerle precio.`;
     }
+    if (avisoPrecio) aviso(avisoPrecio);
     return true;
   } catch (err) { mostrarError(err); return false; }
 }
@@ -395,6 +417,7 @@ function vistaPrincipal() {
     ['historial', 'Historial'],
   ];
   const pendientes = st.cupones.filter(c => !c.canjeado).length;
+  const porPreciar = st.premios.filter(p => p.precio == null && p.para !== yo).length;
   const renombre = st.renombrando ? card(`
       <p class="poro-title">Nombre de la sección</p>
       <form data-f="renombrar" class="poro-row">
@@ -431,7 +454,7 @@ function vistaPrincipal() {
       </form>`)}
 
     <div class="poro-tabs">
-      ${tabs.map(([k, t]) => `<button class="poro-tab ${st.tab === k ? 'on' : ''}" data-a="tab" data-tab="${k}">${t}${k === 'cupones' && pendientes ? ` <span class="poro-badge">${pendientes}</span>` : ''}</button>`).join('')}
+      ${tabs.map(([k, t]) => `<button class="poro-tab ${st.tab === k ? 'on' : ''}" data-a="tab" data-tab="${k}">${t}${k === 'cupones' && pendientes ? ` <span class="poro-badge">${pendientes}</span>` : ''}${k === 'premios' && porPreciar ? ` <span class="poro-badge">${porPreciar}</span>` : ''}</button>`).join('')}
     </div>
     ${{ canjear: tabCanjear, premios: tabPremios, cupones: tabCupones, historial: tabHistorial }[st.tab]()}
   `;
@@ -442,10 +465,12 @@ function tabCanjear() {
   const mio = saldo(st.user.uid);
   if (!lista.length) return card(`<p class="poro-desc">Todavía no hay premios para vos. Podés agregar los que te gustaría en la pestaña <strong>Premios</strong>, o pedirle a ${esc(nombre(otroUid()))} que te cargue alguno.</p>`);
   return lista.map(p => {
-    const falta = p.precio - mio;
+    const sinPrecio = p.precio == null;
+    const falta = sinPrecio ? 0 : p.precio - mio;
     const conf = st.confirmar === p.id;
     let accion;
-    if (falta > 0) accion = `<span class="poro-falta">Te faltan ${falta}</span>`;
+    if (sinPrecio) accion = `<span class="poro-falta espera">Esperando que ${esc(nombre(otroUid()))} le ponga precio</span>`;
+    else if (falta > 0) accion = `<span class="poro-falta">Te faltan ${falta}</span>`;
     else if (conf) accion = `<button class="poro-btn primary" data-a="comprar" data-id="${p.id}">Confirmar</button>
                              <button class="poro-btn" data-a="cancelar-compra">No</button>`;
     else accion = `<button class="poro-btn primary" data-a="comprar" data-id="${p.id}">Canjear</button>`;
@@ -454,52 +479,77 @@ function tabCanjear() {
         <div>
           <p class="poro-premio-nombre">${esc(p.nombre)}</p>
           ${p.descripcion ? `<p class="poro-desc">${esc(p.descripcion)}</p>` : ''}
-          <p class="poro-precio">${ICONO} ${p.precio}</p>
+          ${sinPrecio ? '' : `<p class="poro-precio">${ICONO} ${p.precio}</p>`}
         </div>
         <div class="poro-acciones">${accion}</div>
-      </div>`, falta > 0 ? 'apagado' : '');
+      </div>`, falta > 0 || sinPrecio ? 'apagado' : '');
   }).join('');
 }
 
 function tabPremios() {
   const yo = st.user.uid, otro = otroUid();
-  const form = (p = {}) => {
-    const para = p.para || otro;
-    return `
-    <form data-f="premio" ${p.id ? `data-id="${p.id}"` : ''} class="poro-form">
+  const campoPrecio = (valor = '') => `
+    <input name="precio" type="number" inputmode="numeric" min="1" max="100000" class="poro-input cant poro-precio-campo" placeholder="Precio" value="${valor}" />`;
+
+  const formNuevo = () => `
+    <form data-f="premio" class="poro-form">
       <div class="poro-para">
-        <label><input type="radio" name="para" value="${otro}" ${para === otro ? 'checked' : ''} /> Para ${esc(nombre(otro))}</label>
-        <label><input type="radio" name="para" value="${yo}" ${para === yo ? 'checked' : ''} /> Para mí</label>
+        <label><input type="radio" name="para" value="${otro}" checked /> Para ${esc(nombre(otro))}</label>
+        <label><input type="radio" name="para" value="${yo}" data-yo /> Para mí</label>
       </div>
-      <input name="nombre" maxlength="60" class="poro-input" placeholder="Premio (ej: Masajes 15 min)" value="${esc(p.nombre || '')}" required />
-      <input name="descripcion" maxlength="200" class="poro-input" placeholder="Detalle (opcional)" value="${esc(p.descripcion || '')}" />
+      <input name="nombre" maxlength="60" class="poro-input" placeholder="Premio (ej: Masajes 15 min)" required />
+      <input name="descripcion" maxlength="200" class="poro-input" placeholder="Detalle (opcional)" />
+      <p class="poro-mini poro-nota-precio">El precio te lo pone ${esc(nombre(otro))}.</p>
       <div class="poro-row">
-        <input name="precio" type="number" inputmode="numeric" min="1" max="100000" class="poro-input cant" placeholder="Precio" value="${p.precio || ''}" required />
-        <button class="poro-btn primary">${p.id ? 'Guardar' : 'Agregar'}</button>
-        ${p.id ? '<button type="button" class="poro-btn" data-a="cancelar-edicion">Cancelar</button>' : ''}
+        ${campoPrecio()}
+        <button class="poro-btn primary">Agregar</button>
+      </div>
+    </form>`;
+
+  const formEditar = p => {
+    const paraMi = p.para === yo;
+    return `
+    <form data-f="premio" data-id="${p.id}" class="poro-form">
+      <p class="poro-mini">Para ${esc(nombre(p.para))}</p>
+      <input name="nombre" maxlength="60" class="poro-input" placeholder="Premio" value="${esc(p.nombre)}" required />
+      <input name="descripcion" maxlength="200" class="poro-input" placeholder="Detalle (opcional)" value="${esc(p.descripcion || '')}" />
+      ${paraMi && p.precio != null ? `<p class="poro-mini">Si cambiás el nombre o el detalle, ${esc(nombre(otro))} tiene que volver a ponerle precio.</p>` : ''}
+      <div class="poro-row">
+        ${paraMi ? '' : campoPrecio(p.precio ?? '')}
+        <button class="poro-btn primary">Guardar</button>
+        <button type="button" class="poro-btn" data-a="cancelar-edicion">Cancelar</button>
       </div>
     </form>`;
   };
-  const item = p => st.editando === p.id ? card(form(p)) : card(`
+
+  const item = p => {
+    if (st.editando === p.id) return card(formEditar(p));
+    const sinPrecio = p.precio == null;
+    const meToca = sinPrecio && p.para !== yo;     // premio que mi pareja se cargó: le pongo precio yo
+    return card(`
     <div class="poro-premio">
       <div>
         <p class="poro-premio-nombre">${esc(p.nombre)}</p>
         ${p.descripcion ? `<p class="poro-desc">${esc(p.descripcion)}</p>` : ''}
-        <p class="poro-precio">${ICONO} ${p.precio}</p>
+        ${sinPrecio
+          ? `<p class="poro-falta espera">${meToca ? 'Sin precio — ponéselo vos' : `Esperando precio de ${esc(nombre(otro))}`}</p>`
+          : `<p class="poro-precio">${ICONO} ${p.precio}</p>`}
         <span class="poro-mini">Lo agregó ${esc(nombre(p.creador))}</span>
       </div>
       <div class="poro-acciones">
-        <button class="poro-btn" data-a="editar" data-id="${p.id}">Editar</button>
+        <button class="poro-btn ${meToca ? 'primary' : ''}" data-a="editar" data-id="${p.id}">${meToca ? 'Poner precio' : 'Editar'}</button>
         <button class="poro-btn resta" data-a="borrar" data-id="${p.id}">Borrar</button>
       </div>
-    </div>`);
+    </div>`, meToca ? 'destacado' : '');
+  };
   const grupo = (titulo, lista) => `<p class="poro-subtitulo">${titulo}</p>` +
     (lista.length ? lista.map(item).join('') : card('<p class="poro-desc">Ninguno todavía.</p>'));
 
   return card(`
       <p class="poro-title">Nuevo premio</p>
-      <p class="poro-desc">Cargá premios para ${esc(nombre(otro))} o los que te gustaría ganarte vos, con su precio en ${esc(unidad(2))}.</p>
-      ${st.editando ? '' : form()}`) +
+      <p class="poro-desc">Cargá premios para ${esc(nombre(otro))} con su precio en ${esc(unidad(2))},
+      o los que te gustaría ganarte vos: a esos les pone precio ${esc(nombre(otro))}.</p>
+      ${st.editando ? '' : formNuevo()}`) +
     grupo(`Para ${esc(nombre(otro))}`, st.premios.filter(p => p.para === otro)) +
     grupo('Para vos', st.premios.filter(p => p.para === yo));
 }
