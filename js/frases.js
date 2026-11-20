@@ -1,4 +1,4 @@
-import { Store } from './store.js';
+import { Store } from './store.js?v=202611202251';
 
 /**
  * Frases — rotación secuencial de frases + edición.
@@ -92,18 +92,27 @@ function agregar() {
   renderLista();
 }
 
-function reemplazar(nuevaLista) {
-  lista = nuevaLista;
-  idx   = 0;
-  Store.guardarFrases(lista);
-  Store.guardarIdx(0);
-  _renderFrase(0);
-  renderLista();
+/**
+ * Lista que llegó de la nube (la editó la otra persona o este mismo usuario
+ * desde otro dispositivo). Se guarda local sin volver a subirla y se refresca
+ * la vista, salvo lo que se esté editando en este momento.
+ */
+function aplicarRemoto(nuevaLista) {
+  if (!Array.isArray(nuevaLista) || !nuevaLista.length) return;
+  lista = [...nuevaLista];
+  Store.guardarFrases(lista, false);
+  if (idx >= lista.length) idx = 0;
+
+  const area = document.getElementById('fraseEditArea');
+  if (area && area.style.display !== 'block') _renderFrase(idx);
+
+  const panel = document.getElementById('frasesPanel');
+  if (panel && panel.classList.contains('open') && !panel.contains(document.activeElement)) renderLista();
 }
 
 function getLista() { return lista; }
 
 export const Frases = {
   cargar, mostrarActual, toggleEdit, guardar,
-  renderLista, agregar, reemplazar, getLista,
+  renderLista, agregar, aplicarRemoto, getLista,
 };

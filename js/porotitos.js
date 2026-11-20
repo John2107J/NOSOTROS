@@ -9,12 +9,10 @@
  *  - Cualquiera de los dos puede tildar un cupón como canjeado.
  *  - El nombre de la sección es compartido y editable (por defecto "Corazoncitos").
  *
- * Este módulo se carga solo cuando se abre la sección (import dinámico),
- * así el resto de la app funciona aunque Firebase no esté configurado o no haya internet.
+ * Este módulo se carga solo cuando se abre la sección (import dinámico).
+ * La sesión y la pareja las maneja nube.js (compartido con el resto de la app).
  */
-import { firebaseConfig, firebaseConfigurado } from './firebase-config.js';
-
-const SDK = 'https://www.gstatic.com/firebasejs/10.12.2';
+import * as Nube from './nube.js?v=202611202251';
 const ALFABETO = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // sin 0/O ni 1/I para que no se confundan
 export const NOMBRE_DEFAULT = 'Corazoncitos';
 export const ICONO = '💗';
@@ -39,14 +37,15 @@ const st = {
   aviso: '',
 };
 
-const subs = { user: null, couple: [] };
+let subsPareja = [];      // listeners de premios/cupones/movimientos
+let cidEscuchado = null;
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  Arranque
 // ─────────────────────────────────────────────────────────────────────────────
 export async function abrir() {
   const root = el();
-  if (!firebaseConfigurado) {
+  if (!Nube.configurado) {
     root.innerHTML = card(`
       <p class="poro-title">Falta conectar la base de datos</p>
       <p class="poro-desc">Para usar esta sección hay que configurar Firebase una sola vez.
@@ -67,78 +66,41 @@ export async function abrir() {
   });
 
   try {
-    await cargarSDK();
+    fb = await Nube.iniciar();
   } catch (e) {
     iniciado = false;
     root.innerHTML = card('<p class="poro-desc">No se pudo conectar. Revisá tu conexión a internet y volvé a entrar.</p>');
     return;
   }
-
-  fb.getRedirectResult(fb.auth).catch(err => mostrarError(err));
-  fb.onAuthStateChanged(fb.auth, user => {
-    st.user = user;
-    st.cargando = false;
-    escucharUsuario();
-    render();
-  });
-}
-
-async function cargarSDK() {
-  const [app, auth, fs] = await Promise.all([
-    import(`${SDK}/firebase-app.js`),
-    import(`${SDK}/firebase-auth.js`),
-    import(`${SDK}/firebase-firestore.js`),
-  ]);
-  const a = app.initializeApp(firebaseConfig);
-  fb = { ...auth, ...fs, auth: auth.getAuth(a), db: fs.getFirestore(a) };
+  Nube.suscribir(onEstado, mostrarError);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  Suscripciones en tiempo real
 // ─────────────────────────────────────────────────────────────────────────────
-function escucharUsuario() {
-  subs.user?.();  subs.user = null;
-  if (!st.user) { escucharPareja(null); return; }
-
-  const ref = fb.doc(fb.db, 'users', st.user.uid);
-  subs.user = fb.onSnapshot(ref, snap => {
-    const cid = snap.exists() ? snap.data().coupleId || null : null;
-    if (!snap.exists()) fb.setDoc(ref, { coupleId: null }).catch(mostrarError);
-    if (cid !== st.coupleId) escucharPareja(cid);
-  }, mostrarError);
-}
-
-function escucharPareja(cid) {
-  subs.couple.forEach(u => u());
-  subs.couple = [];
-  st.coupleId = cid;
-  st.couple = null;
-  st.premios = []; st.cupones = []; st.movs = [];
+function onEstado(e) {
+  st.cargando = !e.listo;
+  st.user = e.user;
+  st.coupleId = e.coupleId;
+  st.couple = e.couple;
+  if (st.couple?.nombreSeccion) {
+    try { localStorage.setItem(KEY_NOMBRE, st.couple.nombreSeccion); } catch { /* sin storage */ }
+  }
+  // Las subcolecciones solo se pueden leer siendo miembro.
+  const cid = Nube.esMiembro(e) ? e.coupleId : null;
+  if (cid !== cidEscuchado) {
+    subsPareja.forEach(u => u()); subsPareja = [];
+    st.premios = []; st.cupones = []; st.movs = [];
+    cidEscuchado = cid;
+    if (cid) escucharSub(cid);
+  }
   render();
-  if (!cid) return;
-
-  const base = fb.doc(fb.db, 'couples', cid);
-  subs.couple.push(fb.onSnapshot(base, snap => {
-    st.couple = snap.exists() ? snap.data() : null;
-    if (st.couple?.nombreSeccion) {
-      try { localStorage.setItem(KEY_NOMBRE, st.couple.nombreSeccion); } catch { /* sin storage */ }
-    }
-    // Recién cuando somos miembros podemos leer las subcolecciones.
-    if (st.couple && st.couple.members.includes(st.user.uid) && subs.couple.length === 1) {
-      escucharSub(cid);
-    }
-    render();
-  }, err => {
-    // Código de una pareja ya completa a la que no pertenecemos: volvemos a "conectate".
-    if (err.code === 'permission-denied') { st.couple = { members: [] }; render(); }
-    else mostrarError(err);
-  }));
 }
 
 function escucharSub(cid) {
   const col = n => fb.collection(fb.db, 'couples', cid, n);
   const lista = s => s.docs.map(d => ({ id: d.id, ...d.data() }));
-  subs.couple.push(
+  subsPareja.push(
     fb.onSnapshot(fb.query(col('premios'), fb.orderBy('precio')), s => { st.premios = lista(s); render(); }, mostrarError),
     fb.onSnapshot(fb.query(col('cupones'), fb.orderBy('ts', 'desc')), s => { st.cupones = lista(s); render(); }, mostrarError),
     fb.onSnapshot(fb.query(col('movimientos'), fb.orderBy('ts', 'desc'), fb.limit(60)), s => { st.movs = lista(s); render(); }, mostrarError),
@@ -149,18 +111,7 @@ function escucharSub(cid) {
 //  Acciones
 // ─────────────────────────────────────────────────────────────────────────────
 async function login() {
-  const prov = new fb.GoogleAuthProvider();
-  try {
-    await fb.signInWithPopup(fb.auth, prov);
-  } catch (err) {
-    // En algunos celulares (sobre todo la app instalada en iPhone) el popup no se puede abrir.
-    if (['auth/popup-blocked', 'auth/operation-not-supported-in-this-environment',
-         'auth/cancelled-popup-request'].includes(err.code)) {
-      await fb.signInWithRedirect(fb.auth, prov);
-    } else if (err.code !== 'auth/popup-closed-by-user') {
-      mostrarError(err);
-    }
-  }
+  try { await Nube.login(); } catch (err) { mostrarError(err); }
 }
 
 function miNombre() {
@@ -274,7 +225,7 @@ async function renombrar(nuevo) {
   const n = (nuevo || '').trim().slice(0, 30);
   if (!n) { aviso('Escribí un nombre.', true); return; }
   try {
-    await fb.updateDoc(fb.doc(fb.db, 'couples', st.coupleId), { nombreSeccion: n });
+    await Nube.actualizarPareja({ nombreSeccion: n });
     st.renombrando = false;
     aviso(`Ahora la sección se llama "${n}" ${ICONO}`);
   } catch (err) { mostrarError(err); }
@@ -311,7 +262,7 @@ function onClick(e) {
   const { a, id } = btn.dataset;
   switch (a) {
     case 'login':    login(); break;
-    case 'logout':   fb.signOut(fb.auth); break;
+    case 'logout':   Nube.logout(); break;
     case 'crear':    crearPareja(); break;
     case 'compartir': compartirCodigo(); break;
     case 'tab':      st.tab = btn.dataset.tab; st.confirmar = null; st.editando = null; render(); break;
